@@ -1,0 +1,3 @@
+Genel 	 Uygulama Başladı... 	 10.02.2023 19:38:10
+VeriTabaniYedekleme 	 Veri Tabanı Yedeklendi... 	 10.02.2023 19:38:10
+HayvaniTazedenCikarma 	 Hayvanlar Tazeden Çıkarıldı... 	 10.02.2023 19:38:10

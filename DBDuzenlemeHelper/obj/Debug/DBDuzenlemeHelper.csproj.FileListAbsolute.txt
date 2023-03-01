@@ -1,0 +1,6 @@
+C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\DBDuzenlemeHelper\bin\Debug\DBDuzenlemeHelper.exe.config
+C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\DBDuzenlemeHelper\bin\Debug\DBDuzenlemeHelper.exe
+C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\DBDuzenlemeHelper\bin\Debug\DBDuzenlemeHelper.pdb
+C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\DBDuzenlemeHelper\obj\Debug\DBDuzenlemeHelper.csproj.CoreCompileInputs.cache
+C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\DBDuzenlemeHelper\obj\Debug\DBDuzenlemeHelper.exe
+C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\DBDuzenlemeHelper\obj\Debug\DBDuzenlemeHelper.pdb

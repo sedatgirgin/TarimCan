@@ -1,0 +1,4 @@
+Genel 	 Uygulama Başladı... 	 20.01.2023 18:00:29
+HayvaniTazedenCikarma 	 Hayvanlar Tazeden Çıkarıldı... 	 20.01.2023 18:00:29
+HayvaniTazedenCikarma 	 İşlem Tamamlandı... 	 20.01.2023 18:00:29
+VeriTabaniYedekleme 	 Veri Tabanı Yedeklendi... 	 20.01.2023 18:00:29

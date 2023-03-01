@@ -1,0 +1,2 @@
+C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\DataAccessLayer\obj\Debug\DataAccessLayer.csproj.AssemblyReference.cache
+C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\DataAccessLayer\obj\Debug\DataAccessLayer.csproj.CoreCompileInputs.cache

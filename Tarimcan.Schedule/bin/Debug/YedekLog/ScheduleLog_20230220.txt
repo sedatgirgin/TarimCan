@@ -1,0 +1,9 @@
+Genel 	 Uygulama Başladı... 	 20.02.2023 17:40:25
+VeriTabaniYedekleme 	 Veri Tabanı Yedeklendi... 	 20.02.2023 17:40:25
+HayvaniTazedenCikarma 	 Hayvanlar Tazeden Çıkarıldı... 	 20.02.2023 17:40:25
+HayvanParametreleriGuncellendi 	 1347 Adet Hayvan Güncellendi... 	 20.02.2023 17:40:32
+YemStogundanRasyonDustu 	 Yem stoğundan rasyondaki yemler düştü... 	 20.02.2023 17:40:32
+HayvaniTazedenCikarma 	 İşlem Tamamlandı... 	 20.02.2023 17:40:32
+Genel 	 Uygulama Başladı... 	 20.02.2023 18:22:04
+VeriTabaniYedekleme 	 Veri Tabanı Yedeklendi... 	 20.02.2023 18:22:04
+HayvaniTazedenCikarma 	 Hayvanlar Tazeden Çıkarıldı... 	 20.02.2023 18:22:04

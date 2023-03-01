@@ -1,0 +1,9 @@
+Genel 	 Uygulama Başladı... 	 01.02.2023 23:02:10
+YemStogundanRasyonDustu 	 Yem stoğundan rasyondaki yemler düştü... 	 01.02.2023 23:02:21
+HayvaniTazedenCikarma 	 İşlem Tamamlandı... 	 01.02.2023 23:02:24
+Genel 	 Uygulama Başladı... 	 01.02.2023 23:02:28
+YemStogundanRasyonDustu 	 Yem stoğundan rasyondaki yemler düştü... 	 01.02.2023 23:02:33
+HayvaniTazedenCikarma 	 İşlem Tamamlandı... 	 01.02.2023 23:02:33
+Genel 	 Uygulama Başladı... 	 01.02.2023 23:06:28
+YemStogundanRasyonDustu 	 Yem stoğundan rasyondaki yemler düştü... 	 01.02.2023 23:06:28
+HayvaniTazedenCikarma 	 İşlem Tamamlandı... 	 01.02.2023 23:06:28

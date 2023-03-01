@@ -1,0 +1,45 @@
+Genel 	 Uygulama Başladı... 	 24.01.2023 23:31:39
+HataOlustu 	 Hata Oluştu: System.Data.SqlClient.SqlException (0x80131904): Divide by zero error encountered.
+   konum: System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   konum: System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   konum: System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   konum: System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   konum: System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   konum: System.Data.SqlClient.SqlDataReader.get_MetaData()
+   konum: System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   konum: System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   konum: System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   konum: System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   konum: System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   konum: System.Data.SqlClient.SqlCommand.ExecuteReader()
+   konum: TarimCan.DataAccessLayer.MSSqlDataAccess.GetDataTable(SqlCommand cmd) C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\TarimCan.DataAccessLayer\MSSqlDataAccess.cs içinde: satır 40
+   konum: TarimCan.DataAccessLayer.MSSqlDataAccess.ExcuteReturnObject[T](String spName, List`1 sqlParams) C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\TarimCan.DataAccessLayer\MSSqlDataAccess.cs içinde: satır 84
+   konum: TarimCan.DataAccessLayer.HayvanlarManager.GunlukHayvanVerileriniGuncelle(Int32 HayvanId) C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\TarimCan.DataAccessLayer\HayvanlarManager.cs içinde: satır 417
+   konum: Tarimcan.Schedule.Program.Main(String[] args) C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\Tarimcan.Schedule\Program.cs içinde: satır 48
+ClientConnectionId:4da68671-a998-4401-80c8-7fc266f046c0
+Error Number:8134,State:1,Class:16 	 24.01.2023 23:31:40
+Genel 	 Uygulama Başladı... 	 24.01.2023 23:31:50
+Genel 	 Uygulama Başladı... 	 24.01.2023 23:33:00
+HataOlustu 	 Hata Oluştu: System.Data.SqlClient.SqlException (0x80131904): Divide by zero error encountered.
+   konum: System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   konum: System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   konum: System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   konum: System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   konum: System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   konum: System.Data.SqlClient.SqlDataReader.get_MetaData()
+   konum: System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   konum: System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   konum: System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   konum: System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   konum: System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   konum: System.Data.SqlClient.SqlCommand.ExecuteReader()
+   konum: TarimCan.DataAccessLayer.MSSqlDataAccess.GetDataTable(SqlCommand cmd) C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\TarimCan.DataAccessLayer\MSSqlDataAccess.cs içinde: satır 40
+   konum: TarimCan.DataAccessLayer.MSSqlDataAccess.ExcuteReturnObject[T](String spName, List`1 sqlParams) C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\TarimCan.DataAccessLayer\MSSqlDataAccess.cs içinde: satır 84
+   konum: TarimCan.DataAccessLayer.HayvanlarManager.GunlukHayvanVerileriniGuncelle(Int32 HayvanId) C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\TarimCan.DataAccessLayer\HayvanlarManager.cs içinde: satır 417
+   konum: Tarimcan.Schedule.Program.Main(String[] args) C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\Tarimcan.Schedule\Program.cs içinde: satır 48
+ClientConnectionId:87fa6b8f-64c1-430d-8b3a-2c4632d81dc0
+Error Number:8134,State:1,Class:16 	 24.01.2023 23:33:00
+Genel 	 Uygulama Başladı... 	 24.01.2023 23:33:23
+HayvanParametreleriGuncellendi 	 422 Adet Hayvan Güncellendi... 	 24.01.2023 23:33:39
+HayvaniTazedenCikarma 	 İşlem Tamamlandı... 	 24.01.2023 23:33:39
+Genel 	 Uygulama Başladı... 	 24.01.2023 23:35:39

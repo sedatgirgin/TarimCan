@@ -1,0 +1,6 @@
+C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\TarimCan.Models\bin\Release\TarimCan.Models.dll
+C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\TarimCan.Models\bin\Release\TarimCan.Models.pdb
+C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\TarimCan.Models\obj\Release\TarimCan.Models.csproj.AssemblyReference.cache
+C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\TarimCan.Models\obj\Release\TarimCan.Models.csproj.CoreCompileInputs.cache
+C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\TarimCan.Models\obj\Release\TarimCan.Models.dll
+C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\TarimCan.Models\obj\Release\TarimCan.Models.pdb
