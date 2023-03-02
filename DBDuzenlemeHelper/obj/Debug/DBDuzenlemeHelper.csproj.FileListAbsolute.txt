@@ -4,3 +4,10 @@ C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\DBDuzenlemeHelper\bin\Debug\D
 C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\DBDuzenlemeHelper\obj\Debug\DBDuzenlemeHelper.csproj.CoreCompileInputs.cache
 C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\DBDuzenlemeHelper\obj\Debug\DBDuzenlemeHelper.exe
 C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\DBDuzenlemeHelper\obj\Debug\DBDuzenlemeHelper.pdb
+D:\TarimCanSourceCode\DBDuzenlemeHelper\bin\Debug\DBDuzenlemeHelper.exe.config
+D:\TarimCanSourceCode\DBDuzenlemeHelper\bin\Debug\DBDuzenlemeHelper.exe
+D:\TarimCanSourceCode\DBDuzenlemeHelper\bin\Debug\DBDuzenlemeHelper.pdb
+D:\TarimCanSourceCode\DBDuzenlemeHelper\obj\Debug\DBDuzenlemeHelper.csproj.AssemblyReference.cache
+D:\TarimCanSourceCode\DBDuzenlemeHelper\obj\Debug\DBDuzenlemeHelper.csproj.CoreCompileInputs.cache
+D:\TarimCanSourceCode\DBDuzenlemeHelper\obj\Debug\DBDuzenlemeHelper.exe
+D:\TarimCanSourceCode\DBDuzenlemeHelper\obj\Debug\DBDuzenlemeHelper.pdb

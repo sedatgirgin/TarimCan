@@ -4,3 +4,9 @@ C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\TarimCan.Models\obj\Debug\Tar
 C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\TarimCan.Models\obj\Debug\TarimCan.Models.dll
 C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\TarimCan.Models\obj\Debug\TarimCan.Models.pdb
 C:\Users\dell\Desktop\SuruTakip\TarimCanSourceCode\TarimCan.Models\obj\Debug\TarimCan.Models.csproj.AssemblyReference.cache
+D:\TarimCanSourceCode\TarimCan.Models\bin\Debug\TarimCan.Models.dll
+D:\TarimCanSourceCode\TarimCan.Models\bin\Debug\TarimCan.Models.pdb
+D:\TarimCanSourceCode\TarimCan.Models\obj\Debug\TarimCan.Models.csproj.AssemblyReference.cache
+D:\TarimCanSourceCode\TarimCan.Models\obj\Debug\TarimCan.Models.csproj.CoreCompileInputs.cache
+D:\TarimCanSourceCode\TarimCan.Models\obj\Debug\TarimCan.Models.dll
+D:\TarimCanSourceCode\TarimCan.Models\obj\Debug\TarimCan.Models.pdb

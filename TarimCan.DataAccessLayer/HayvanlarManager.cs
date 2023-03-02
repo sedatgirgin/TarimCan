@@ -138,14 +138,13 @@ namespace TarimCan.DataAccessLayer
             return sda.ExcuteReturnObject<DBCheckModel>("sp_HayvanDurumHareketiEkle_Tekil", lstParam);
         }
 
-        public DBCheckModel HayvanTohumlamaBilgisiEkle(int HayvanId, DateTime IslemTarihi, string BabaKupeNo, decimal IslemUcreti, string Aciklama, int IsletmeId, bool IslemSonlandiMi)
+        public DBCheckModel HayvanTohumlamaBilgisiEkle(int HayvanId, DateTime IslemTarihi, string BabaKupeNo, decimal IslemUcreti, string Aciklama, int IsletmeId)
         {
             List<SqlParameter> lstParam = new List<SqlParameter>();
             lstParam.Add(new SqlParameter("@pSahipId", IsletmeId));
             lstParam.Add(new SqlParameter("@pHayvanId", HayvanId));
             lstParam.Add(new SqlParameter("@pDurumBilgisiId", 4));
             lstParam.Add(new SqlParameter("@pIslemTarihi", IslemTarihi));
-            lstParam.Add(new SqlParameter("@pIslemSonlandiMi", IslemSonlandiMi));
             lstParam.Add(new SqlParameter("@pBabaKupeNo", BabaKupeNo));
             lstParam.Add(new SqlParameter("@pIslemUcreti", IslemUcreti));
             lstParam.Add(new SqlParameter("@pAciklama", Aciklama));

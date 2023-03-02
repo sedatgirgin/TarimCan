@@ -458,13 +458,5 @@ namespace TarimCan.DataAccessLayer
             lstParam.Add(new SqlParameter("@pIsletmeId", IsletmeId));
             return sda.ExcuteReturnObject<AnaSayfaIsletmeDurumModel>("sp_AnaSayfaOzetVeriGetir", lstParam);
         }
-
-        public DBCheckModel DogumuYaklasanHayvanlariAjandayaEkle()
-        {
-            List<SqlParameter> lstParam = new List<SqlParameter>();
-            return sda.ExcuteReturnObject<DBCheckModel>("sp_DogumuYaklasanHayvanlariAjandayaEkle", lstParam);
-        }
-
-
     }
 }

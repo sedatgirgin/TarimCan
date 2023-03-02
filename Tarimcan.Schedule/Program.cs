@@ -70,17 +70,6 @@ namespace Tarimcan.Schedule
 
                 #endregion
 
-                #region Doğumu yaklaşanları ajandaya ekle
-
-                // Veri Tabanı Yedekleniyor
-                DBCheckModel dbCDogumuYaklasanlariAjandayaEkle = cm.DogumuYaklasanHayvanlariAjandayaEkle();
-                if (dbCStoktanRasyonDus.ReturnValue == 1)
-                {
-                    ScheduleHelper.AddMsjToLog(LogTypes.YemStogundanRasyonDustu, "Doğumu yaklaşan hayvanlar ajandaya eklendi...", LogFolders.YedekLog);
-                }
-
-                #endregion
-
                 ScheduleHelper.AddMsjToLog(LogTypes.HayvaniTazedenCikarma, "İşlem Tamamlandı...", LogFolders.YedekLog);
 
             }
