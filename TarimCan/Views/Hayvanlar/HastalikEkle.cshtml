@@ -1,0 +1,203 @@
+﻿@using TarimCan.Models
+@using TarimCan.Helper
+
+@{
+    ViewBag.Title = "Hastalık Ekle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-12">
+    <div class="portlet light bordered minHeight">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-equalizer font-green-sharp"></i>
+                <span class="caption-subject font-green-sharp bold uppercase">HASTALIK EKLE</span> -
+                <a href="https://www.youtube.com/watch?v=Zm51mv885aI&t=83s" target="_blank"> <img src="~/DashboardTheme/assets/global/ana-icons/youtube-full-logo.png" style="height:20px" title="Yardım Videosu"></a>
+            </div>
+        </div>
+        <div class="portlet-body form">
+            <!-- BEGIN FORM-->
+            <div class="form-horizontal">
+                @{
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">İşlem Tarihi</label>
+                        <div class="col-md-4">
+                            <input type="date" class="form-control" data-format="00-00-0000" placeholder="dd-mm-yyyy" id="IslemTarihi" autocomplete="off">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Hastalık</label>
+                        <div class="col-md-4">
+                            @Html.DropDownList("Hastaliklar", new SelectList(ViewBag.Hastaliklar, "Value", "Text"), "Seçiniz", new { @class = "form-control", @onchange = "HastalikChanged(this.value)" })
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="rwDiger" style="display:none">
+                        <label class="col-md-3 control-label">Hastalık Adı</label>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" placeholder="hastalık adı" id="DigerHastalik">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Kullanılan İlaç</label>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" placeholder="kullanılan ilaç" id="KullanilanIlac">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">İlaç Maliyeti</label>
+                        <div class="col-md-4">
+                            <input type="number" class="form-control" placeholder="ilaç fiyatı" id="IlacMaliyeti" value="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="rwKesimKarkasAgirlik">
+                        <label class="col-md-3 control-label">Veteriner Hekim</label>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" placeholder="veteriner hekim" id="VeterinerHekim">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Veteriner Hekim Maliyeti</label>
+                        <div class="col-md-4">
+                            <input type="number" class="form-control" placeholder="veteriner hekim maliyeti" id="VeterinerHekimMaliyeti" value="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Açıklama</label>
+                        <div class="col-md-4">
+                            <textarea class="form-control" id="Aciklama" cols="5"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">&nbsp;</label>
+                        <div class="col-md-4">
+                            <button id="btnSosYardOde" type="submit" class="btn green" onclick="Kaydet()" style="width:100%">Durum Bilgisi Kaydet</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    @Html.AntiForgeryToken()
+</div>
+
+<script src="@Url.Content("~/DashboardTheme/assets/global/plugins/jquery.min.js")" type="text/javascript"></script>
+
+<script>
+
+    $(function () {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const IslemTarihi = urlParams.get('IslemTarihi')
+        document.getElementById("IslemTarihi").value = IslemTarihi;
+    })
+
+    function formatMoney(price) {
+        var currency_symbol = "₺"
+        var formattedOutput = new Intl.NumberFormat('tr-TR', {
+            style: 'currency',
+            currency: 'TRY',
+            minimumFractionDigits: 2,
+        });
+        return formattedOutput.format(price).replace(currency_symbol, '')
+    }
+
+    function HastalikChanged(val) {
+
+        console.log("val: " + val);
+
+        document.getElementById("rwDiger").style.display = 'none';
+
+        if (val == 18) {
+            document.getElementById("rwDiger").style.display = 'block';
+        }
+
+    }
+
+    function Kaydet() {
+
+        var Aciklama = "";
+
+        console.log("Ölüm Açıklama: " + Aciklama);
+
+        var data = {
+            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+            'HayvanId': @ViewBag.HayvanId,
+            'DurumBilgisiId': 2,
+            'IslemTarihi': document.getElementById("IslemTarihi").value,
+            'HastalikId': document.getElementById("Hastaliklar").value,
+            'KullanilanIlac': document.getElementById("KullanilanIlac").value,
+            'KullanilanIlacMaliyeti': document.getElementById("IlacMaliyeti").value,
+            'VeterinerHekim': document.getElementById("VeterinerHekim").value,
+            'VeterinerHekimMaliyeti': document.getElementById("VeterinerHekimMaliyeti").value,
+            'Aciklama': document.getElementById("Aciklama").value,
+            'DigerHastalik': document.getElementById("DigerHastalik").value
+        };
+
+        console.log("data", JSON.stringify(data));
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("HastalikEkleAction", "Hayvanlar")',
+            data: data,
+            success: function (response) {
+                if (response.IsSuccess) {
+                    bootbox.dialog({
+                        message: "İşlem başarılı",
+                        title: "İşlem Tamamlandı. Kayıt Başarılı.",
+                        buttons: {
+                            success: {
+                                label: "Tamam",
+                                className: "green",
+                                callback: function () {
+                                    location.href = "/Hayvanlar/Index/";
+                                }
+                            }
+                        }
+                    });
+                }
+                else {
+                    if (response.MessageCode != -1) {
+                        ShowInfoFunctionBox(response.Message);
+                    }
+                    else {
+                        console.log(response.Message);
+                    }
+                }
+            }
+        });
+    }
+
+</script>
+
+<script>
+
+    function maxLengthCheck(object) {
+        if (object.value.length > object.maxLength)
+            object.value = object.value.slice(0, object.maxLength)
+    }
+
+    function isNumeric(evt) {
+        var theEvent = evt || window.event;
+        var key = theEvent.keyCode || theEvent.which;
+        key = String.fromCharCode(key);
+        var regex = /[0-9]|\./;
+        if (!regex.test(key)) {
+            theEvent.returnValue = false;
+            if (theEvent.preventDefault) theEvent.preventDefault();
+        }
+    }
+
+</script>
+
+<script>
+    $('#HayvanEkle').addClass("active");
+</script>

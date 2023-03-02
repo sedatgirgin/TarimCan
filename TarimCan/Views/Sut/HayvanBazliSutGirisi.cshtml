@@ -1,0 +1,362 @@
+﻿@using TarimCan.Models
+@using TarimCan.Helper
+
+@model SutModel
+
+@{
+    ViewBag.Title = "Günlük Süt Yönetimi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <img class="col-md-2" src="~/DashboardTheme/assets/global/plugins/slider-layer-slider/skins/fullwidth/loading.gif" style="width:56px; height:25px" />
+                            <div class="col-md-9">
+                                <h4 class="modal-title">Kayıt Yapılıyor. Lütfen bekleyiniz...</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="portlet light bordered" style="min-height:705px">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-equalizer font-green-sharp"></i>
+                <span class="caption-subject font-green-sharp bold uppercase">GÜNLÜK SÜT YÖNETİMİ</span> -
+                <a href="https://www.youtube.com/watch?v=Zm51mv885aI&t=83s" target="_blank"> <img src="~/DashboardTheme/assets/global/ana-icons/youtube-full-logo.png" style="height:20px" title="Yardım Videosu"></a>
+            </div>
+        </div>
+
+        <div class="form-horizontal">
+            <div class="form-body">
+                <div class="form-group">
+                    <label class="col-md-4 control-label bold">İşlem Tarihi</label>
+                    <div class="col-md-4">
+                        <input type="date" id="IslemZamani" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" onchange="IslemTarihiChanged()">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-body">
+                <div class="form-group">
+                    <label class="col-md-4 control-label bold">Litre Fiyatı (TL)</label>
+                    <div class="col-md-4">
+                        <input type="number" id="LitreFiyati" class="form-control" placeholder="litre fiyatı" onchange="ToplamFiyatHesapla()" value="@ViewBag.SonSutLitreFiyati.ToString().Replace(",",".")">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-body">
+                <div class="form-group">
+                    <label class="col-md-4 control-label bold">Günlük Süt Miktarı (kg)</label>
+                    <div class="col-md-4">
+                        <input type="number" id="GunlukSutMiktariKg" class="form-control" placeholder="toplam süt miktari" onchange="ToplamSutuIneklereBol()" value="@ViewBag.ToplamLitre.ToString().Replace(",",".")">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-body">
+                <div class="form-group">
+                    <label class="col-md-4 control-label bold">Toplam Fiyat</label>
+                    <div class="col-md-4">
+                        <input type="number" id="ToplamFiyat" class="form-control" placeholder="toplam fiyat" value="@ViewBag.GunlukToplamHasilat.ToString().Replace(",",".")" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-body">
+                <div class="form-group">
+                    <label class="col-md-4 control-label bold">&nbsp;</label>
+                    <div class="col-md-4">
+                        <button id="btnKaydet" type="submit" class="btn green" onclick="HayvanBazliSutSatisiKaydet()" style="width:100%">Toplu Kaydet</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="portlet-body">
+            @{
+                if (ViewBag.HayvanListesi != null)
+                {
+
+                    List<SutModel> HayvanListesi = ViewBag.HayvanListesi;
+
+                    if (HayvanListesi.Count > 0)
+                    {
+
+                        <table class="table table-hover table-light">
+                            <thead>
+                                <tr>
+                                    <th width="5%" style="text-align:center">#</th>
+                                    <th width="15%" style="text-align:center">Küpe Numarası</th>
+                                    <th width="15%" style="text-align:center">Adı / Takip Numarası</th>
+                                    <th width="15%" style="text-align:center">Sabah Sağımı</th>
+                                    <th width="15%" style="text-align:center">Öğlen Sağımı</th>
+                                    <th width="15%" style="text-align:center">Akşam Sağımı</th>
+                                    <th width="5%" style="text-align:center"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tblHayvanResult">
+                                @{
+                                    int sayacSos = 1;
+
+                                    foreach (var item in HayvanListesi)
+                                    {
+                                        <tr>
+                                            <td style="text-align:center;">
+                                                @Convert.ToInt32(sayacSos++).ToString()
+                                            </td>
+                                            <td style="text-align:center;">
+                                                @item.KupeNo
+                                            </td>
+                                            <td style="text-align:center">
+                                                @item.Adi
+                                            </td>
+                                            <td style="text-align:center">
+                                                <input type="number" class="form-control form-filter input-sm" id="tblSabah_@item.HayvanId" placeholder="sabah sağımı" onchange="HayvanSutunuToplamaEkle('@item.HayvanId')" value="@item.SabahSutMiktari.ToString().Replace(",",".")">
+                                                <input type="hidden" id="hdnSabah_@item.HayvanId" value="@item.SabahSutMiktari.ToString().Replace(",",".")" />
+                                            </td>
+                                            <td style="text-align:center">
+                                                <input type="number" class="form-control form-filter input-sm" id="tblOglen_@item.HayvanId" placeholder="öğlen sağımı" onchange="HayvanSutunuToplamaEkle('@item.HayvanId')" value="@item.OglenSutMiktari.ToString().Replace(",",".")">
+                                                <input type="hidden" id="hdnOglen_@item.HayvanId" value="@item.OglenSutMiktari.ToString().Replace(",",".")" />
+                                            </td>
+                                            <td style="text-align:center">
+                                                <input type="number" class="form-control form-filter input-sm" id="tblAksam_@item.HayvanId" placeholder="akşam sağımı" onchange="HayvanSutunuToplamaEkle('@item.HayvanId')" value="@item.AksamSutMiktari.ToString().Replace(",",".")">
+                                                <input type="hidden" id="hdnAksam_@item.HayvanId" value="@item.AksamSutMiktari.ToString().Replace(",",".")" />
+                                            </td>
+                                            <td style="text-align:center">
+                                                @*<button class="btn btn-sm yellow filter-submit margin-bottom" id="btnSutKaydet_@item.Id"><i class="fa fa-plus"></i>&nbsp; Kaydet</button>*@
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <span>Listelenecek süt geçmişi bulunamadı...</span>
+                    }
+                }
+                else
+                {
+                    <span>Listelenecek süt geçmişi bulunamadı...</span>
+                }
+            }
+        </div>
+    </div>
+
+    @Html.AntiForgeryToken()
+</div>
+
+<script src="@Url.Content("~/DashboardTheme/assets/global/plugins/jquery.min.js")" type="text/javascript"></script>
+
+<script>
+
+    function ToplamSutuIneklereBol() {
+
+        var inputs = document.getElementById('tblHayvanResult').getElementsByTagName('input');
+        let inputCount = inputs.length;
+
+        var ToplamSutMiktari = document.getElementById("GunlukSutMiktariKg").value;
+        let HayvanBasiSutMiktari = ToplamSutMiktari / inputCount;
+
+        for (var i = 0; i < inputs.length; i++) {
+            //console.log("InoutValue: " + inputs[i].id);
+            inputs[i].value = HayvanBasiSutMiktari.toFixed(2);
+        }
+
+        ToplamFiyatHesapla();
+    }
+
+    function HayvanSutunuToplamaEkle(HayvanId) {
+        var SabahSutu = 0;
+        var OglenSutu = 0;
+        var AksamSutu = 0;
+        var ToplamSutMiktari = 0;
+        var GuncelToplam = 0;
+
+        if (document.getElementById("GunlukSutMiktariKg").value != "") {
+            ToplamSutMiktari = document.getElementById("GunlukSutMiktariKg").value;
+        }
+
+        if (document.getElementById("tblSabah_" + HayvanId).value != "") {
+            SabahSutu = document.getElementById("tblSabah_" + HayvanId).value;
+
+            var EskiDeger = parseFloat(document.getElementById("hdnSabah_" + HayvanId).value);
+            var ToplamSutMiktariTemp = ToplamSutMiktari - EskiDeger;
+            ToplamSutMiktari = parseFloat(SabahSutu) + parseFloat(ToplamSutMiktariTemp);
+
+            document.getElementById("hdnSabah_" + HayvanId).value = document.getElementById("tblSabah_" + HayvanId).value;
+
+            //console.log("SabahSutu: " + SabahSutu);
+            //console.log("EskiDeger: " + EskiDeger);
+            //console.log("ToplamSutMiktari: " + ToplamSutMiktari);
+            //console.log("ToplamSutMiktariTemp: " + ToplamSutMiktariTemp);
+        }
+
+        if (document.getElementById("tblOglen_" + HayvanId).value != "") {
+            OglenSutu = document.getElementById("tblOglen_" + HayvanId).value;
+
+            var EskiDeger = parseFloat(document.getElementById("hdnOglen_" + HayvanId).value);
+            var ToplamSutMiktariTemp = ToplamSutMiktari - EskiDeger;
+            ToplamSutMiktari = parseFloat(OglenSutu) + parseFloat(ToplamSutMiktariTemp);
+
+            document.getElementById("hdnOglen_" + HayvanId).value = document.getElementById("tblOglen_" + HayvanId).value;
+        }
+
+        if (document.getElementById("tblAksam_" + HayvanId).value != "") {
+            AksamSutu = document.getElementById("tblAksam_" + HayvanId).value;
+
+            var EskiDeger = parseFloat(document.getElementById("hdnAksam_" + HayvanId).value);
+            var ToplamSutMiktariTemp = ToplamSutMiktari - EskiDeger;
+            ToplamSutMiktari = parseFloat(AksamSutu) + parseFloat(ToplamSutMiktariTemp);
+
+            document.getElementById("hdnAksam_" + HayvanId).value = document.getElementById("tblAksam_" + HayvanId).value;
+        }
+
+        document.getElementById("GunlukSutMiktariKg").value = ToplamSutMiktari;
+        ToplamFiyatHesapla();
+    }
+
+    function ToplamFiyatHesapla() {
+
+        var LitreFiyati = document.getElementById("LitreFiyati").value;
+        var GunlukSutMiktariKg = document.getElementById("GunlukSutMiktariKg").value;
+
+        if (LitreFiyati != "" && GunlukSutMiktariKg != "") {
+            document.getElementById("ToplamFiyat").value = parseFloat(LitreFiyati) * parseFloat(GunlukSutMiktariKg);
+        }
+
+    }
+
+    function HayvanBazliSutSatisiKaydet() {
+
+        //console.log("HayvanIdleri: " + @ViewBag.HayvanIdleri);
+
+        var hayvanIdleri = '@ViewBag.HayvanIdleri';
+
+        const myArray = hayvanIdleri.split(",");
+        let sayac = 1;
+
+        for (var i = 0; i < myArray.length; i++) {
+
+            //console.log("HayvanIdsi: " + myArray[i]);
+
+            $('#basic').modal('show');
+
+            var data = {
+                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+                'LitreFiyati': document.getElementById("LitreFiyati").value.replace(".", ","),
+                'HayvanId': myArray[i],
+                'ToplamLitre': document.getElementById("GunlukSutMiktariKg").value.replace(".", ","),
+                'SabahSutMiktari': document.getElementById("tblSabah_" + myArray[i]).value.replace(".",","),
+                'OglenSutMiktari': document.getElementById("tblOglen_" + myArray[i]).value.replace(".", ","),
+                'AksamSutMiktari': document.getElementById("tblAksam_" + myArray[i]).value.replace(".", ","),
+                'IslemTarihi': document.getElementById("IslemZamani").value
+            };
+
+            console.log("data: " + JSON.stringify(data));
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SagilanHayvanlariKaydet", "Sut")',
+                data: data,
+                success: function (response) {
+                    if (response.IsSuccess) {
+
+                        console.log("Sayac: " + sayac + "lenght: " + myArray.length);
+
+                        if (sayac == myArray.length) {
+                            bootbox.dialog({
+                                message: "İşlem Tamamlandı. Kayıt Başarılı.",
+                                title: "İşlem başarılı",
+                                buttons: {
+                                    success: {
+                                        label: "Tamam",
+                                        className: "green",
+                                        callback: function () {
+                                            $('#basic').modal('hide');
+                                        }
+                                    }
+                                }
+                            });
+                        }
+
+                        sayac = sayac + 1;
+                    }
+                    else {
+                        if (response.MessageCode != -1) {
+                            ShowInfoFunctionBox(response.Message);
+                        }
+                        else {
+                            console.log(response.Message);
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    function IslemTarihiChanged() {
+        location.href = "/Sut/HayvanBazliSutGirisi?IslemZamani=" + document.getElementById("IslemZamani").value;
+    }
+
+</script>
+
+<script>
+
+    $(function () {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const IslemZamani = urlParams.get('IslemZamani')
+        document.getElementById("IslemZamani").value = IslemZamani;
+    })
+
+    function maxLengthCheck(object) {
+        if (object.value.length > object.maxLength)
+            object.value = object.value.slice(0, object.maxLength)
+    }
+
+    function isNumeric(evt) {
+        var theEvent = evt || window.event;
+        var key = theEvent.keyCode || theEvent.which;
+        key = String.fromCharCode(key);
+        var regex = /[0-9]|\./;
+        if (!regex.test(key)) {
+            theEvent.returnValue = false;
+            if (theEvent.preventDefault) theEvent.preventDefault();
+        }
+    }
+
+    function formatMoney(price) {
+        var currency_symbol = "₺"
+        var formattedOutput = new Intl.NumberFormat('tr-TR', {
+            style: 'currency',
+            currency: 'TRY',
+            minimumFractionDigits: 0,
+        });
+        return formattedOutput.format(price).replace(currency_symbol, '')
+    }
+
+</script>
+
+<script>
+    $('#SutYonetimi').addClass("open");
+    $('#SutYonetimiArrow').addClass("open");
+    $('#SutYonetimiSubMenu').css("display", "block");
+    $('#subMenuHayvanBazliSutGirisi').addClass("active");
+</script>

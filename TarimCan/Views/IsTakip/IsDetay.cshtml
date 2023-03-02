@@ -1,0 +1,126 @@
+﻿@using TarimCan.Models
+@using TarimCan.Helper
+
+@model IsTakipModel
+
+@{
+    ViewBag.Title = "İş Ekle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+
+    .fileinput-button {
+        position: relative;
+        overflow: hidden;
+    }
+
+        .fileinput-button input {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 0;
+            opacity: 0;
+            -ms-filter: 'alpha(opacity=0)';
+            font-size: 200px;
+            direction: ltr;
+            cursor: pointer;
+        }
+
+    label {
+        color: black;
+        font-size: 15px;
+    }
+</style>
+
+<div class="col-md-12">
+    <div class="portlet light bordered" style="min-height:620px">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-equalizer font-green-sharp"></i>
+                <span class="caption-subject font-green-sharp bold uppercase">İŞ EKLE</span>
+            </div>
+        </div>
+        <div class="portlet-body form">
+            <!-- BEGIN FORM-->
+            <div class="form-horizontal">
+                @{
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Başlık</label>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" placeholder="başlık" id="Baslik" autocomplete="off" value="@Model.Baslik" disabled>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Açıklama</label>
+                        <div class="col-md-4">
+                            <textarea class="form-control" id="Aciklama" cols="5" disabled>@Model.Aciklama</textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Kategori</label>
+                        <div class="col-md-4">
+                            @Html.DropDownList("Kategoriler", new SelectList(ViewBag.Kategoriler, "Value", "Text"), "Seçiniz", new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Yorum</label>
+                        <div class="col-md-4">
+                            <textarea class="form-control" id="TamamlanmaYorumu" cols="5">@Model.TamamlanmaYorumu</textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">&nbsp;</label>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn green" onclick="Kaydet()" style="width:100%">Kaydet</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    @Html.AntiForgeryToken()
+</div>
+
+<input type="hidden" id="hdnExcelBase64" />
+
+<script src="@Url.Content("~/DashboardTheme/assets/global/plugins/jquery.min.js")" type="text/javascript"></script>
+
+<script>
+
+    $(document).ready(function () {
+        $('#Kategoriler').val(@Model.KategoriId);
+    });
+
+    function Kaydet() {
+
+        var dataObject = ({
+            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+            'TamamlanmaYorumu': document.getElementById("TamamlanmaYorumu").value,
+            'KategoriId': document.getElementById("Kategoriler").value,
+            'IsTakipId': @ViewBag.IsTakipId
+        });
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("IsGuncelle", "IsTakip")',
+            data: dataObject,
+            success: function (response) {
+
+                console.log(response);
+                if (response.IsSuccess) {
+                    location.href = "/IsTakip/Index";
+                }
+
+            }
+        });
+    }
+
+    $('#Kategoriler').val(@Model.KategoriId);
+    $('#IsTakip').addClass("active");
+</script>

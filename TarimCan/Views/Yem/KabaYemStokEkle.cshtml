@@ -1,0 +1,344 @@
+﻿@using TarimCan.Models
+
+@{
+    ViewBag.Title = "Hayvan Ekle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-12">
+    <div class="portlet light bordered" style="min-height:770px">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-equalizer font-green-sharp"></i>
+                <span class="caption-subject font-green-sharp bold uppercase">KABA YEM EKLE</span> -
+                <a href="https://www.youtube.com/watch?v=Zm51mv885aI&t=83s" target="_blank"> <img src="~/DashboardTheme/assets/global/ana-icons/youtube-full-logo.png" style="height:20px" title="Yardım Videosu"></a>
+            </div>
+        </div>
+        <div class="portlet-body form">
+            <!-- BEGIN FORM-->
+            <div class="form-horizontal">
+                @{
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Yem</label>
+                        <div class="col-md-4">
+                            @Html.DropDownList("Yemler", new SelectList(ViewBag.KabaYemler, "Value", "Text"), "Seçiniz", new { @class = "form-control", @onchange = "KabaYemChanged(this.value)" })
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="dvDigerYemAdi" style="display:none">
+                        <label class="col-md-3 control-label">Yem Adı</label>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" placeholder="yem adı" id="DigerYemAdi" maxlength="50" autocomplete="off">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Stok Giriş Şekli</label>
+                        <div class="col-md-4">
+                            <select id="SahiplikSekli" class="form-control">
+                                <option value="0">Seçiniz...</option>
+                                <option value="1">Satın Alma</option>
+                                <option value="2">Üretim</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Miktarı (ton)</label>
+                        <div class="col-md-4">
+                            @*<input type="number" class="form-control" placeholder="miktarı" id="TonMiktari" maxlength="2" autocomplete="off" onchange="ToplamFiyatHesapla()">*@
+                            <input type="number"  class="form-control" name="TonMiktari" id="TonMiktari" placeholder="miktarı" autocomplete="off" maxlength="5" min="1" max="9999" oninput="maxLengthCheck(this)" onchange="ToplamFiyatHesapla()">
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Ton Fiyatı</label>
+                        <div class="col-md-4">
+                            <input type="number" class="form-control" placeholder="ton fiyatı" id="TonFiyati" autocomplete="off" onchange="ToplamFiyatHesapla()">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Toplam Fiyat</label>
+                        <div class="col-md-4">
+                            <input type="number" class="form-control" placeholder="toplam fiyat" id="ToplamFiyat" autocomplete="off">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Stok Giriş / Fatura Tarihi</label>
+                        <div class="col-md-4">
+                            <input type="date" class="form-control" data-format="00-00-0000" placeholder="dd-mm-yyyy" id="IslemTarihi" autocomplete="off" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Fatura No</label>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" placeholder="fatura no" id="FaturaNo" autocomplete="off">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Ödeme Şekli</label>
+                        <div class="col-md-4">
+                            <select id="OdemeSekli" class="form-control" onclick="OdemeSekliChanged(this.value)">
+                                <option value="0">Seçiniz...</option>
+                                <option value="1">Peşin</option>
+                                <option value="2">Vadeli</option>
+                                <option value="3">Çek</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="dvOdemeTarihi" style="display:none">
+                        <label class="col-md-3 control-label">Ödeme Tarihi</label>
+                        <div class="col-md-4">
+                            <input type="date" class="form-control" data-format="00-00-0000" placeholder="dd-mm-yyyy" id="OdemeTarihi" autocomplete="off">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">&nbsp;</label>
+                        <div class="col-md-4">
+                            <button id="btnSosYardOde" type="submit" class="btn green" onclick="StokEkle()" style="width:100%">Kaydet</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="portlet light">
+                    <div class="portlet-title tabbable-line">
+                        <div class="caption caption-md">
+                            <i class="icon-globe theme-font hide"></i>
+                            <span class="caption-subject font-red-sunglo bold uppercase">YEM STOK DURUMU</span>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <!--BEGIN TABS-->
+                        <div class="tab-pane active" id="tab_1_1">
+                            <div id="chartContainer" style="width: 100%;"></div>
+                        </div>
+
+                        @{
+                            if (ViewBag.IsletmeYemStoklari != null)
+                            {
+                                List<YemStoguModel> list = ViewBag.IsletmeYemStoklari;
+
+                                <table class="table table-hover table-light" style="width:60%">
+                                    <thead>
+                                        <tr>
+                                            <th width="10%" style="text-align:center">#</th>
+                                            <th width="30%" style="text-align:center">Yem Tipi</th>
+                                            <th width="25%" style="text-align:center">Yem Adı</th>
+                                            <th width="25%" style="text-align:center">Stok Miktarı</th>
+                                            <th width="10%" style="text-align:center"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tblHayvanResult">
+                                        @{
+                                            int sayacSos = 1;
+
+                                            foreach (var item in list)
+                                            {
+                                                <tr>
+                                                    <td style="text-align:center;">
+                                                        @Convert.ToInt32(sayacSos++).ToString()
+                                                    </td>
+                                                    <td style="text-align:center;">
+                                                        @item.YemTipi
+                                                    </td>
+                                                    <td style="text-align:center">
+                                                        @item.YemAdi
+                                                    </td>
+                                                    <td style="text-align:center">
+                                                        @item.StokMiktariKg.ToString("#,##0") Kg
+                                                    </td>
+                                                    <td align="center">
+                                                        <a href="/Yem/YemStokHareketleri/@item.YemId" class="btn default btn-xs green-stripe"> Güncelle </a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+
+                            }
+                            else
+                            {
+                                <span> Listelenecek stok bulunamadı...</span>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    @Html.AntiForgeryToken()
+</div>
+
+<script src="@Url.Content("~/DashboardTheme/assets/global/plugins/jquery.min.js")" type="text/javascript"></script>
+
+<script>
+    $(function () {
+
+
+    })
+
+    var YemAdi = "";
+    var YemId = "";
+
+    function KabaYemChanged(val) {
+        document.getElementById("dvDigerYemAdi").style.display = "none";
+
+        if (val == 14) {
+            document.getElementById("dvDigerYemAdi").style.display = "block";
+        }
+    }
+
+    function OdemeSekliChanged(val) {
+        document.getElementById("dvOdemeTarihi").style.display = "none";
+
+        if (val == 2 || val == 3) {
+            document.getElementById("dvOdemeTarihi").style.display = "block";
+        }
+    }
+
+    function ToplamFiyatHesapla() {
+        var TonMiktari = document.getElementById("TonMiktari").value;
+        var TonFiyati = document.getElementById("TonFiyati").value;
+
+        if (TonMiktari != "" && TonFiyati != "") {
+            document.getElementById("ToplamFiyat").value = parseFloat(TonMiktari) * parseFloat(TonFiyati);
+        }
+    }
+
+    function StokEkle() {
+
+        YemId = document.getElementById("Yemler").value;
+
+        if (YemId == 14) {
+            YemAdi = document.getElementById("DigerYemAdi").value;
+        }
+        else {
+            YemAdi = $("#Yemler option:selected").text();
+        }
+
+        if (document.getElementById("Yemler").value == "") {
+            ShowInfoFunctionBox("Yem Çeşidini Seçiniz...");
+            return;
+        }
+
+        if (document.getElementById("Yemler").value != "" && YemAdi == "") {
+            ShowInfoFunctionBox("Diğer Yem Adını Giriniz...");
+            return;
+        }
+
+        if (document.getElementById("TonMiktari").value == "") {
+            ShowInfoFunctionBox("Yem Miktarını Giriniz...");
+            return;
+        }
+
+        if (document.getElementById("TonFiyati").value == "") {
+            ShowInfoFunctionBox("Yem Fiyatını Giriniz...");
+            return;
+        }
+
+        if (document.getElementById("OdemeSekli").value == "0") {
+            ShowInfoFunctionBox("Ödeme Şeklini Giriniz...");
+            return;
+        }
+
+        var dataObject = (
+        {
+            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+            'YemId': document.getElementById("Yemler").value,
+            'YemAdi': YemAdi,
+            'StokGirisSekliId': document.getElementById("SahiplikSekli").value,
+            'StokGirisMiktariTon': document.getElementById("TonMiktari").value.replace('.',','),
+            'BirimFiyati': document.getElementById("TonFiyati").value,
+            'ToplamFiyat': document.getElementById("ToplamFiyat").value,
+            'SatinAlmaTarihi': document.getElementById("IslemTarihi").value,
+            'FaturaNo': document.getElementById("FaturaNo").value,
+            'OdemeSekliId': document.getElementById("OdemeSekli").value,
+            'OdemeTarihi': document.getElementById("OdemeTarihi").value
+        });
+
+        console.log("dataObject: " + JSON.stringify(dataObject));
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("KabaYemStokEkleAction", "Yem")',
+            data: dataObject,
+            success: function (response) {
+                if (response.IsSuccess) {
+                    bootbox.dialog({
+                        title: "İşlem başarılı",
+                        message: "İşlem Tamamlandı. Kayıt Başarılı.",
+                        buttons: {
+                            success: {
+                                label: "Tamam",
+                                className: "green",
+                                callback: function () {
+                                    location.reload();
+                                }
+                            }
+                        }
+                    });
+                }
+                else {
+                    if (response.MessageCode != -1) {
+                        ShowInfoFunctionBox(response.Message);
+                    }
+                    else {
+                        console.log(response.Message);
+                    }
+                }
+            }
+        });
+
+    }
+
+</script>
+
+<script>
+
+    function maxLengthCheck(object) {
+        if (isNaN(parseFloat(object.value))) {
+            object.value = "";
+        }
+        if (object.value.length > object.max.length) {
+            object.value = object.value.slice(0, object.max.length)
+        }
+    }
+
+    //function maxLengthCheck(object) {
+    //    if (object.value.length > object.maxLength)
+    //        object.value = object.value.slice(0, object.maxLength)
+    //}
+
+    function isNumeric(evt) {
+        var theEvent = evt || window.event;
+        var key = theEvent.keyCode || theEvent.which;
+        key = String.fromCharCode(key);
+        var regex = /[0-9]|\./;
+        if (!regex.test(key)) {
+            theEvent.returnValue = false;
+            if (theEvent.preventDefault) theEvent.preventDefault();
+        }
+    }
+
+</script>
+
+<script>
+    $('#YemYonetimi').addClass("open");
+    $('#YemYonetimiArrow').addClass("open");
+    $('#yemYonetimiSubMenu').css("display", "block");
+    $('#subMenuKabaYemStokEkle').addClass("active");
+</script>

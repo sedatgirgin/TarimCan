@@ -1,0 +1,112 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Tarım Can Yeni Nesil Çiftlik Yardımcınız</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+
+    <meta content="" name="TarımCan Çiflik ve Sürü Yönetimi yapılmasını sağlayan bir yönetim uygulamasıdır. Bu uygulama ile çiftliğinizdeki hayvanları kolaylıkla takip edebilirsiniz. tarimcan, terra seracılık, terra bilişim, sürü yönetimi, çiftlik yönetimi, sera yönetimi, yazılım program" />
+    <meta content="" name="Terra Bilişim Hizmetleri" />
+
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
+    <link href="../DashboardTheme/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="../DashboardTheme/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="../DashboardTheme/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="../DashboardTheme/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css" />
+    <link href="../DashboardTheme/assets/admin/pages/css/login.css" rel="stylesheet" type="text/css" />
+    <link href="../DashboardTheme/assets/global/css/components-rounded.css" id="style_components" rel="stylesheet" type="text/css" />
+    <link rel="shortcut icon" href="favicon.ico" />
+</head>
+<body class="login">
+    <div class="menu-toggler sidebar-toggler">
+    </div>
+    <div class="logo">
+        <img src="../DashboardTheme/assets/admin/layout4/img/logo.png" alt="" width="300" height="auto" />
+    </div>
+    <div class="content">
+        <h3 class="form-title">Kullanıcı Girişi</h3>
+        <div class="alert alert-danger display-hide">
+            <button class="close" data-close="alert"></button>
+        </div>
+        <div class="form-group">
+            <label class="control-label visible-ie8 visible-ie9">Kullanıcı Adı</label>
+            <input class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="telefon numarası" id="KullaniciAdi" />
+        </div>
+        <div class="form-group">
+            <label class="control-label visible-ie8 visible-ie9">Şifre</label>
+            <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="şifre" id="Sifre" />
+        </div>
+        <div class="form-group">
+            <label class="control-label" style="font-style:italic">Cep telefonu ile girişlerde telefon numaranızın başında 0 (Sıfır) olmadan 10 haneli olarak giriniz...</label>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-success uppercase" onclick="KullaniciGiris()">GİRİŞ</button>
+            <a href="javascript:;" id="forget-password" class="forget-password">Şifremi unuttum</a>
+        </div>
+        <div class="create-account">
+            <p>
+                <a href="/Home/Register" class="uppercase">Kullanıcı Oluştur</a>
+            </p>
+        </div>
+    </div>
+
+    @Html.AntiForgeryToken()
+
+    <div class="copyright">
+        @DateTime.Now.Year.ToString() © Tarım Can | Yeni Nesil Çiftlik Asistanınız. Tüm hakları saklıdır.
+    </div>
+
+
+    <script src="../DashboardTheme/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
+    <script src="../DashboardTheme/assets/global/plugins/jquery-migrate.min.js" type="text/javascript"></script>
+    <script src="../DashboardTheme/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="../DashboardTheme/assets/global/plugins/bootbox/bootbox.min.js"></script>
+    <script src="../DashboardTheme/assets/admin/layout4/scripts/custom.js"></script>
+
+    <script>
+
+        function KullaniciGiris() {
+
+            var KullaniciAdi = document.getElementById("KullaniciAdi").value;
+            var Sifre = document.getElementById("Sifre").value;
+
+            if (KullaniciAdi == "" || Sifre == "") {
+                ShowErrorMessageBox("Lütfen tüm alanları doldurunuz...");
+                return;
+            }
+
+            var data = {
+                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+                'KullaniciAdi': KullaniciAdi,
+                'Sifre': Sifre
+            };
+
+            //console.log("data: " + JSON.stringify(data));
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("LoginAction", "Home")',
+                data: data,
+                success: function (response) {
+                    if (response.IsSuccess) {
+                        location.href = "/Home/Index";
+                    }
+                    else {
+                        ShowErrorMessageBox(response.Message);
+                    }
+                }
+            });
+        }
+
+    </script>
+
+
+</body>
+</html>

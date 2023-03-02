@@ -1,0 +1,124 @@
+﻿@using TarimCan.Models
+
+@model List<AjandaModel>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/DashboardTheme/LightBox/css/lightbox.css" rel="stylesheet" />
+
+<div class="col-md-12" style="min-height:600px">
+
+    <div class="portlet light bordered" style="min-height:620px">
+        <div class="portlet light" style="padding:0 !important; font-size:13px !important; margin:0px !important">
+            <div class="portlet-title" style="margin-bottom:0px !important">
+                <div class="caption">
+                    <i class="icon-equalizer font-red-sunglo"></i>
+                    <span class="caption-subject font-red-sunglo bold uppercase" style="font-size:15px">HAYVAN GEÇMİŞ GÖREV LİSTESİ</span> -
+                    <a href="https://www.youtube.com/watch?v=Zm51mv885aI&t=83s" target="_blank"> <img src="~/DashboardTheme/assets/global/ana-icons/youtube-full-logo.png" style="height:20px" title="Yardım Videosu"></a>
+                </div>
+            </div>
+        </div>
+        <div class="portlet-body">
+            @{
+                if (Model.Count > 0)
+                {
+
+                    <table class="table table-hover table-light" style="display: block; overflow-x: auto; white-space: nowrap;">
+                        <thead>
+                            <tr>
+                                <th style="text-align:center" width="5%">No</th>
+                                <th style="text-align:center" width="6%">Küpe No</th>
+                                <th style="text-align:center" width="20%">Görev</th>
+                                <th style="text-align:center" width="20%">Tamamlanma Notu</th>
+                                <th style="text-align:center" width="6%">Adı / Takip Numarası</th>
+                                <th style="text-align:center" width="6%">Geçen Gün Sayısı</th>
+                                <th style="text-align:center" width="6%">Başlangıç Tarihi</th>
+                                <th style="text-align:center" width="6%">Bitiş Tarihi</th>
+                                <th style="text-align:center" width="6%">Görev Gün Sayısı</th>
+                                <th style="text-align:center" width="6%">Ertelendi Mi</th>
+                                <th style="text-align:center" width="6%">Tamamlandı Mı</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tblHayvanResult" style="overflow-y: auto; overflow-x: hidden; ">
+                            @{
+                                int sayacSos = 1;
+
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td style="text-align:center">@Convert.ToInt32(sayacSos++).ToString()</td>
+                                        <td>
+                                            @item.KupeNo
+                                        </td>
+                                        <td>
+                                            @item.Gorev
+                                        </td>
+                                        <td>
+                                            @item.IslemNotu
+                                        </td>
+                                        <td>
+                                            @item.Adi
+                                        </td>
+                                        <td style="text-align:center">
+                                            @{
+                                                TimeSpan tsKalanGun = item.BaslangicTarihi - DateTime.Now;
+                                                <span>@tsKalanGun.Days Gün</span>
+                                            }
+                                        </td>
+                                        <td style="text-align:center">
+                                            @item.BaslangicTarihi.ToString("dd.MM.yyyy")
+                                        </td>
+                                        <td style="text-align:center">
+                                            @item.BitisTarihi.ToString("dd.MM.yyyy")
+                                        </td>
+                                        <td style="text-align:center">
+                                            @{
+                                                TimeSpan tsGorevGun = item.BitisTarihi - item.BaslangicTarihi;
+                                                <span>@tsGorevGun.Days Gün</span>
+                                            }
+                                        </td>
+                                        <td style="text-align:center">
+                                            @{
+                                                if (item.ErtelendiMi)
+                                                {
+                                                    <span class="label label-sm label-success"><i class="fa fa-check"></i></span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="label label-sm label-danger"><i class="fa fa-times"></i></span>
+                                                }
+                                            }
+                                        </td>
+                                        <td style="text-align:center">
+                                            @{
+                                                if (item.TamamlandiMi)
+                                                {
+                                                    <span class="label label-sm label-success"><i class="fa fa-check"></i></span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="label label-sm label-danger"><i class="fa fa-times"></i></span>
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+
+                }
+                else
+                {
+                    <span> Listelenecek görev bulunamadı...</span>
+                }
+            }
+        </div>
+    </div> 
+</div>
+
+<script>
+    $('#HayvanYonetimi').addClass("active");
+</script>

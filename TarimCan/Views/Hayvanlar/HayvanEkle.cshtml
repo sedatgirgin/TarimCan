@@ -1,0 +1,700 @@
+﻿@using TarimCan.Models
+@using TarimCan.Helper
+
+
+@{
+    ViewBag.Title = "Hayvan Ekle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-12">
+    <div class="portlet light bordered" style=" min-height: 705px;">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-equalizer font-green-sharp"></i>
+                <span class="caption-subject font-green-sharp bold uppercase">ÇİFTLİĞİME HAYVAN KAYDET</span> -
+                <a href="https://www.youtube.com/watch?v=Zm51mv885aI&t=83s" target="_blank"> <img src="~/DashboardTheme/assets/global/ana-icons/youtube-full-logo.png" style="height:20px" title="Yardım Videosu"></a>
+            </div>
+            <div class="actions">
+                <a href="/Hayvanlar/TopluHayvanYukleme" class="btn btn-circle btn-default">
+                    <i class="fa fa-plus"></i>
+                    <span class="hidden-480">
+                        Toplu Hayvan Ekle
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        @{
+            if (SessionManager.HayvanTohumlamaAyi == 0)
+            {
+                <div class="portlet-body form">
+                    <div class="form-horizontal">
+
+                        <div class="alert alert-danger">
+                            <strong>Dikkat: </strong> Hayvan tohumlanma başlangıç ayı her çiftliğin üretim süreci ve işletme bölgesine göre farklılık göstermekte olup, uygulamamız aracılığı ile hayvan verimliliğinin ölçülmesi ve analiz edilmesi kapsamında bu verinin işletmenize özel olarak girilmesi gerekmektedir. <br /><br />
+                            Bu veri sadece ilk kullanımda girilecek olup, <b><i>Kullanıcı Bilgilerim</i></b> menüsünden değiştirilebilmektedir.
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Tohumlama Başlangıç Ayı</label>
+                            <div class="col-md-4">
+                                <input type="number" class="form-control" id="txtTohumlamaAyi" autocomplete="off" maxlength="2" size="2">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">&nbsp;</label>
+                            <div class="col-md-4">
+                                <button id="btnTohumAyiKaydet" type="submit" class="btn green" style="width:100%" onclick="TohumlanmaAyiKaydet()">Kaydet</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            }
+            else
+            {
+                <div class="portlet-body form">
+                    <!-- BEGIN FORM-->
+                    <div class="form-horizontal">
+                        @{
+
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Küpe No</label>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" placeholder="küpe no" id="KupeNo" maxlength="50" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Adı / Özel Takip Numarası</label>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" placeholder="adı" id="Adi" maxlength="50" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Irkı</label>
+                                <div class="col-md-4">
+                                    @Html.DropDownList("Irki", new SelectList(ViewBag.Irki, "Value", "Text"), "Seçiniz", new { @class = "form-control" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Cinsiyeti</label>
+                                <div class="col-md-4">
+                                    @Html.DropDownList("Cinsiyeti", new SelectList(ViewBag.Cinsiyeti, "Value", "Text"), "Seçiniz", new { @class = "form-control", @onchange = "CinsiyetChanged(this.value)" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Doğum Tarihi</label>
+                                <div class="col-md-4">
+                                    <input type="date" class="form-control" data-format="00-00-0000" placeholder="dd-mm-yyyy" id="DogumTarihi" autocomplete="off" onblur="GebemiKontrolEt()">
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="display:none" id="rwDogumGucMu">
+                                <label class="col-md-3 control-label">Doğum Güç Mü ?</label>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="DogumGucMu" id="flexRadioDefault1" value="1">
+                                        <label class="form-check-label" for="DogumGucMu">
+                                            Evet
+                                        </label>
+                                        <input class="form-check-input" type="radio" name="DogumGucMu" id="flexRadioDefault2" value="0" checked>
+                                        <label class="form-check-label" for="DogumGucMu">
+                                            Hayır
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="display:none" id="rwEsiniSonunuAttiMi">
+                                <label class="col-md-3 control-label">Eşini Sonunu Attı Mı ?</label>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="EsiniSonunuAttiMi" id="flexRadioDefault1" value="1" checked>
+                                        <label class="form-check-label" for="EsiniSonunuAttiMi">
+                                            Evet
+                                        </label>
+                                        <input class="form-check-input" type="radio" name="EsiniSonunuAttiMi" id="flexRadioDefault2" value="0">
+                                        <label class="form-check-label" for="EsiniSonunuAttiMi">
+                                            Hayır
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="pnlSuruyeGirisDurumu" style="display:none" onchange="HayvanDurumuChanged()">
+                                <label class="col-md-3 control-label">Hayvan Durumu</label>
+                                <div class="col-md-4">
+                                    <select id="SuruyeGirisDurumlari" class="form-control">
+                                        <option value="">Seçiniz</option>
+                                        <option value="20">Sağmal</option>
+                                        <option value="8">Kuru</option>
+                                        <option value="22">Boş / Kuru</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="pnlGebelikDurumu" style="display: none" onchange="GebelikDurumuChanged()">
+                                <label class="col-md-3 control-label">Gebelik Durumu</label>
+                                <div class="col-md-4">
+                                    <select id="GebelikDurumulari" class="form-control">
+                                        <option value="">Seçiniz</option>
+                                        <option value="4">Tohumlandı</option>
+                                        <option value="3">Gebe</option>
+                                        <option value="19">Boş</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="pnlTohumlanmaTarihi" style="display:none">
+                                <label class="col-md-3 control-label">Tohumlanma / Gebelik Tarihi</label>
+                                <div class="col-md-4">
+                                    <input type="date" class="form-control" data-format="00-00-0000" placeholder="dd-mm-yyyy" id="TohumlanmaTarihi" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group" id="rwSonDugumYaptigiTarih" style="display:none">
+                                <label class="col-md-3 control-label">Son Doğum Yaptığı Tarih</label>
+                                <div class="col-md-4">
+                                    <input type="date" class="form-control" data-format="00-00-0000" placeholder="dd-mm-yyyy" id="SonDogumYaptigiTarih" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="dvLaktasyonSayisi" style="display:none">
+                                <label class="col-md-3 control-label">Laktasyon Sayısı</label>
+                                <div class="col-md-4">
+                                    <input type="number" class="form-control" placeholder="laktasyon sayısı" id="LaktasyonSayisi" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-3 control-label"></label>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" onchange="ShowHideDetailPanel()">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            Detaylı Bilgi Kaydet
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="DetayPanel" name="DetayPanel" style="display:none">
+
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Sürüye Giriş Tipi</label>
+                                    <div class="col-md-4">
+                                        @Html.DropDownList("SuruyeGirisTipi", new SelectList(ViewBag.SuruyeGirisTipi, "Value", "Text"), new { @class = "form-control", @onchange = "SuruyeGirisTipiChanged(this.value)" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group" id="dvSatinAlmaFiyati" style="display:none">
+                                    <label class="col-md-3 control-label">Satın Alma Fiyatı</label>
+                                    <div class="col-md-4">
+                                        <input type="number" class="form-control" placeholder="fiyati" id="SatinAlmaFiyati" autocomplete="off">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Anne Küpe No</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" placeholder="anne küpe no" id="AnneKupeNo" autocomplete="off">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Baba Küpe No</label>
+                                    <div class="col-md-4">
+                                        @if (ViewBag.BabaKupeNo != "")
+                                        {
+                                            <input type="text" class="form-control" placeholder="baba küpe no" id="BabaKupeNo" autocomplete="off" value="@ViewBag.BabaKupeNo" disabled>
+                                        }
+                                        else
+                                        {
+                                            <input type="text" class="form-control" placeholder="baba küpe no" id="BabaKupeNo" autocomplete="off">
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Sürüye Giriş Tarihi</label>
+                                    <div class="col-md-4">
+                                        <input type="date" class="form-control" data-format="00-00-0000" placeholder="dd-mm-yyyy" id="SuruyeGirisTarihi" autocomplete="off" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Açıklama</label>
+                                    <div class="col-md-4">
+                                        <textarea class="form-control" rows="6" cols="60" id="Aciklama"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Fotoğraflar</label>
+                                    <div class="col-md-4">
+                                        <div class="row" id="rwPhotoList">
+                                            <input type="file" id="imgupload" style="display:none" />
+
+                                            <div class="col-md-3">
+                                                <img id="imgProfilePhoto1" style="width:100%; height:150px; max-width:100px; min-width:80px; cursor:pointer" src="~/DashboardTheme/assets/admin/layout4/img/add_image.JPG">
+                                            </div>
+                                            <div class="col-md-3" id="ftPnl1" style="display:none">
+                                                <img id="imgProfilePhoto2" style="width: 100%; height: 150px; max-width: 100px; min-width: 80px; cursor: pointer" src="~/DashboardTheme/assets/admin/layout4/img/add_image.JPG">
+                                            </div>
+                                            <div class="col-md-3" id="ftPnl2" style="display:none">
+                                                <img id="imgProfilePhoto3" style="width: 100%; height: 150px; max-width: 100px; min-width: 80px; cursor: pointer" src="~/DashboardTheme/assets/admin/layout4/img/add_image.JPG">
+                                            </div>
+                                            <div class="col-md-3" id="ftPnl3" style="display:none">
+                                                <img id="imgProfilePhoto4" style="width: 100%; height: 150px; max-width: 100px; min-width: 80px; cursor: pointer" src="~/DashboardTheme/assets/admin/layout4/img/add_image.JPG">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">&nbsp;</label>
+                                <div class="col-md-4">
+                                    <button id="btnSosYardOde" type="submit" class="btn green" onclick="Kaydet()" style="width:100%">Kaydet</button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </div>
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="hdnImgBase64_1" />
+    <input type="hidden" id="hdnImgBase64_2" />
+    <input type="hidden" id="hdnImgBase64_3" />
+    <input type="hidden" id="hdnImgBase64_4" />
+</div>
+
+<script src="@Url.Content("~/DashboardTheme/assets/global/plugins/jquery.min.js")" type="text/javascript"></script>
+
+<script>
+
+    var PhotoIndex = 0;
+    $(function () {
+
+        $('#SuruyeGirisTipi').val(1);
+
+        if ('@ViewBag.SonEklenenIrkId' != 0) {
+            $('#Irki').val('@ViewBag.SonEklenenIrkId');
+        }
+
+        if (parseInt(@ViewBag.HayvanId) != 0 && parseInt(@ViewBag.DurumId) == 0) {
+            document.getElementById("Irki").value = '@ViewBag.IrkId';
+            document.getElementById("SuruyeGirisTipi").value = '@ViewBag.SuruyeGirisTipId';
+            document.getElementById("Cinsiyeti").value = '@ViewBag.CinsiyetId';
+            PhotoIndex = '@ViewBag.PhotoCount';
+        }
+
+        if (parseInt(@ViewBag.HayvanId) != 0 && parseInt(@ViewBag.DurumId) == 6) {
+            document.getElementById("AnneKupeNo").value = '@ViewBag.AnneKupeNo';
+
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const DogumTarihi = urlParams.get('DogumTarihi')
+            document.getElementById("DogumTarihi").value = DogumTarihi;
+            document.getElementById("SuruyeGirisTarihi").value = DogumTarihi;
+            document.getElementById("SuruyeGirisTipi").value = 1;
+            document.getElementById("Irki").value = '@ViewBag.IrkId';
+            document.getElementById("rwDogumGucMu").style.display = 'block';
+            document.getElementById("rwEsiniSonunuAttiMi").style.display = 'block';
+            document.getElementById("SuruyeGirisTipi").setAttribute('disabled', '');
+            document.getElementById("AnneKupeNo").setAttribute('disabled', '');
+            document.getElementById("Irki").setAttribute('disabled', '');
+            //console.log("DogumTarihi" + DogumTarihi);
+        }
+
+        //console.log("HayvanId: " + @ViewBag.HayvanId + " - DurumId: " + @ViewBag.DurumId + "AnneKupeNo" + '@ViewBag.AnneKupeNo');
+
+    })
+
+    function ShowHideDetailPanel() {
+        //console.log("ShowHideDetailPanel");
+        $("#DetayPanel").toggle();
+    }
+
+    var ImgBase64;
+
+    if (@SessionManager.HayvanTohumlamaAyi != 0) {
+
+        $('#imgProfilePhoto1').click(function () { $('#imgupload').trigger('click'); });
+        $('#imgProfilePhoto2').click(function () { $('#imgupload').trigger('click'); });
+        $('#imgProfilePhoto3').click(function () { $('#imgupload').trigger('click'); });
+        $('#imgProfilePhoto4').click(function () { $('#imgupload').trigger('click'); });
+        document.querySelector("#imgupload").addEventListener("change", readFile);
+        document.querySelector("#SuruyeGirisDurumlari").addEventListener("change", SuruyeGirisDurumlariChanged);
+        document.querySelector("#GebelikDurumulari").addEventListener("change", SuruyeGirisDurumlariChanged);
+
+    }
+
+    function SuruyeGirisTipiChanged(val) {
+        document.getElementById("dvSatinAlmaFiyati").style.display = 'none';
+
+        if (val == 2) {
+            document.getElementById("dvSatinAlmaFiyati").style.display = 'block';
+        }
+    }
+
+    function HayvanDurumuChanged() {
+        var GebelikDurumId = document.getElementById("SuruyeGirisDurumlari").value;
+        document.getElementById("TohumlanmaTarihi").style.display = 'block';
+
+        if (GebelikDurumId == 8) {
+            document.getElementById("GebelikDurumulari").value = 3;
+            document.getElementById("GebelikDurumulari").disabled = true;
+            document.getElementById("pnlGebelikDurumu").style.display = 'block';
+        }
+        else if (GebelikDurumId == 22) {
+            document.getElementById("pnlGebelikDurumu").style.display = 'none';
+            document.getElementById("TohumlanmaTarihi").style.display = 'none';
+        }
+        else {
+            document.getElementById("GebelikDurumulari").value = "";
+            document.getElementById("GebelikDurumulari").disabled = false;
+            document.getElementById("pnlGebelikDurumu").style.display = 'block';
+        }
+    }
+
+    function GebelikDurumuChanged() {
+        var GebelikDurumId = document.getElementById("GebelikDurumulari").value;
+
+        if (GebelikDurumId == 19) {
+            document.getElementById("pnlTohumlanmaTarihi").style.display = 'none';
+        }
+        else {
+            document.getElementById("pnlTohumlanmaTarihi").style.display = 'block';
+        }
+    }
+
+    function SuruyeGirisDurumlariChanged() {
+
+        var valSgd = document.getElementById("SuruyeGirisDurumlari").value;
+        var valGd = document.getElementById("GebelikDurumulari").value;
+
+        document.getElementById("pnlTohumlanmaTarihi").style.display = 'none';
+
+        if (valSgd == 22) {
+            document.getElementById("pnlTohumlanmaTarihi").style.display = 'none';
+        }
+
+        if (valSgd == 20) { //rwSonDugumYaptigiTarih
+            document.getElementById("rwSonDugumYaptigiTarih").style.display = 'block';
+            document.getElementById("pnlTohumlanmaTarihi").style.display = 'none';
+        }
+
+        //console.log("SuruyeGirisDurumlariChanged: " + valSgd);
+        //console.log("GebelikDurumulariChanged: " + valGd);
+
+        if (valSgd == 8 || valSgd == 20 || valGd == 4 || valGd == 3) {
+            document.getElementById("pnlTohumlanmaTarihi").style.display = 'block';
+        }
+    }
+
+    function CinsiyetChanged(val) {
+
+        //console.log("val: " + val);
+
+        @*if (val == 1 && '@ViewBag.DurumId' != 6) {
+            document.getElementById("dvLaktasyonSayisi").style.display = 'block';
+        }
+        else {
+            document.getElementById("dvLaktasyonSayisi").style.display = 'none';
+        }*@
+        
+    }
+
+    function readFile() {
+
+        if (!this.files || !this.files[0]) return;
+
+        const FR = new FileReader();
+
+        FR.addEventListener("load", function (evt) {
+            document.querySelector("#imgProfilePhoto" + PhotoIndex).src = evt.target.result;
+            ImgBase64 = evt.target.result;
+            //console.log("hdnImgBase64_" + PhotoIndex + ":" + evt.target.result);
+            document.getElementById("hdnImgBase64_" + PhotoIndex).value = evt.target.result;
+
+            //console.log("FR_PhotoIndex: " + PhotoIndex);
+            if (PhotoIndex < 4) {
+                //console.log("ftPnl: " + "ftPnl" + PhotoIndex);
+                var pnlName = "ftPnl" + PhotoIndex;
+                document.getElementById(pnlName).style.display = 'block';
+            }
+        });
+
+        if (PhotoIndex < 4) {
+            //console.log("<4PhotoIndex: " + PhotoIndex);
+
+            PhotoIndex = parseInt(PhotoIndex) + parseInt(1);
+        }
+        FR.readAsDataURL(this.files[0]);
+    }
+
+    function GebemiKontrolEt() {
+
+        document.getElementById("pnlSuruyeGirisDurumu").style.display = 'none';
+        document.getElementById("pnlTohumlanmaTarihi").style.display = 'none';
+        document.getElementById("pnlGebelikDurumu").style.display = 'none';
+        document.getElementById("SuruyeGirisDurumlari").value = "";
+        document.getElementById("pnlTohumlanmaTarihi").value = "";
+
+        if (document.getElementById("Cinsiyeti").value == 2) {
+            return;
+        }
+
+        if (document.getElementById("Cinsiyeti").value == "") {
+            ShowInfoFunctionBox('Cinsiyet seçiniz...');
+            document.getElementById("DogumTarihi").value = "0000-00-00";
+            return;
+        }
+
+
+        if (document.getElementById("SuruyeGirisTipi").value == 1) {
+            document.getElementById("SuruyeGirisTarihi").value = document.getElementById("DogumTarihi").value;
+        }
+
+        var dataObject = (
+        {
+            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+            'DogumTarihi': document.getElementById("DogumTarihi").value
+        });
+
+        //console.log("dataObject: " + JSON.stringify(dataObject));
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CheckDogumTarihi", "Hayvanlar")',
+            data: dataObject,
+            success: function (response) {
+                document.getElementById("dvLaktasyonSayisi").style.display = 'none';
+                //console.log("Response: " + JSON.stringify(response))
+                if (response.GebeMiValue == 1) {
+                    document.getElementById("pnlSuruyeGirisDurumu").style.display = 'block';
+                    document.getElementById("pnlGebelikDurumu").style.display = 'block';
+                    document.getElementById("dvLaktasyonSayisi").style.display = 'block';
+                }
+                if (response.SonDogumDurumuVal == 1) {
+                    document.getElementById("rwSonDugumYaptigiTarih").style.display = 'block';
+                    document.getElementById("pnlSuruyeGirisDurumu").style.display = 'block';
+                    document.getElementById("pnlGebelikDurumu").style.display = 'block';
+                    document.getElementById("dvLaktasyonSayisi").style.display = 'block';
+                }
+            }
+        });
+    }
+
+    function TohumlanmaAyiKaydet() {
+
+        if (document.getElementById("txtTohumlamaAyi").value == "") {
+            ShowInfoFunctionBox("Tohumlanma ayını giriniz...");
+            return;
+        }
+
+        var dataObject = (
+        {
+            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+            'HayvanTohumlamaAyi': document.getElementById("txtTohumlamaAyi").value
+        });
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("HayvanTohumlanmaAyiGuncelleAction", "Hayvanlar")',
+            data: dataObject,
+            success: function (response) {
+                //console.log("Response: " + JSON.stringify(response))
+                if (response.IsSuccess == true) {
+                    location.reload();
+                }
+                else {
+                    ShowInfoFunctionBox(response.Message);
+                }
+
+            }
+        });
+
+    }
+
+    function Kaydet() {
+
+        var KupeNo = document.getElementById("KupeNo").value;
+        var Adi = document.getElementById("Adi").value;
+        var AnneKupeNo = document.getElementById("AnneKupeNo").value;
+        var BabaKupeNo = document.getElementById("BabaKupeNo").value;
+        var CinsiyetId = document.getElementById("Cinsiyeti").value;
+        var IrkId = document.getElementById("Irki").value;
+        var SuruyeGirisTipId = document.getElementById("SuruyeGirisTipi").value;
+        var SuruyeGirisTarihi = document.getElementById("SuruyeGirisTarihi").value;
+        var DogumTarihi = document.getElementById("DogumTarihi").value;
+        var Aciklama = document.getElementById("Aciklama").value;
+        var TohumlanmaTarihi = document.getElementById("TohumlanmaTarihi").value; 
+        var SuruyeGirisDurumId = document.getElementById("SuruyeGirisDurumlari").value;
+        var SonDogumYaptigiTarih = document.getElementById("SonDogumYaptigiTarih").value;
+        var GebelikDurumId = document.getElementById("GebelikDurumulari").value;
+        var SatinAlmaFiyati = document.getElementById("SatinAlmaFiyati").value;
+        var LaktasyonSayisi = document.getElementById("LaktasyonSayisi").value;
+
+        if (KupeNo == "") {
+            ShowInfoFunctionBox("Lütfen Küpe No giriniz...");
+            return;
+        }
+
+        if (CinsiyetId == "") {
+            ShowInfoFunctionBox("Lütfen Cinsiyet seçiniz...");
+            return;
+        }
+
+        if (IrkId == "") {
+            ShowInfoFunctionBox("Lütfen Irk seçiniz...");
+            return;
+        }
+
+        if (DogumTarihi == "") {
+            ShowInfoFunctionBox("Lütfen Doğum Tarihi giriniz...");
+            return;
+        }
+
+        var DogumTarihiDate = new Date(DogumTarihi);
+        var SuruyeGirisTarihiDate = new Date(SuruyeGirisTarihi);
+
+        if (DogumTarihiDate > new Date()) {
+            ShowErrorMessageBox("Doğum tarihi bugünden büyük olamaz...");
+            return;
+        }
+
+        if (DogumTarihiDate > SuruyeGirisTarihiDate) {
+            ShowErrorMessageBox("Sürüye giriş tarihi doğum tarihinden büyük olamaz...");
+            return;
+        }
+
+        if ((SuruyeGirisDurumId == 8 || SuruyeGirisDurumId == 20) && (GebelikDurumId == 4 || GebelikDurumId == 3) && TohumlanmaTarihi == "") {
+            ShowErrorMessageBox("Tohumlanma Tarihini Giriniz...");
+            return;
+        }
+
+        if ((GebelikDurumId == 4 || GebelikDurumId == 3) && TohumlanmaTarihi == "") {
+            ShowErrorMessageBox("Tohumlanma Tarihini Giriniz...");
+            return;
+        }
+
+        if ((SuruyeGirisDurumId == 20 || GebelikDurumId == 18) && SonDogumYaptigiTarih == "") {
+            ShowErrorMessageBox("Son Doğum Yaptığı Tarihi Giriniz...");
+            return;
+        }
+
+        if (SuruyeGirisTipId == 2 && SatinAlmaFiyati == "") {
+            ShowInfoFunctionBox("Satın alma fiyatı giriniz...");
+            return;
+        }
+
+        if ((SuruyeGirisDurumId == 22 && SonDogumYaptigiTarih == "") || (GebelikDurumId == 19 && SonDogumYaptigiTarih == "")) {
+            ShowErrorMessageBox("Son Doğum Yaptığı Tarihi Giriniz...");
+            return;
+        }
+
+        if (SonDogumYaptigiTarih == "") {
+            SonDogumYaptigiTarih = '01.01.9999';
+        }
+
+        var dataObject = (
+        {
+            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+            'Id': @ViewBag.HayvanId,
+            'KupeNo': KupeNo,
+            'Adi': Adi,
+            'AnneKupeNo': AnneKupeNo,
+            'BabaKupeNo': BabaKupeNo,
+            'CinsiyetId': CinsiyetId,
+            'IrkId': IrkId,
+            'SuruyeGirisTipId': SuruyeGirisTipId,
+            'SuruyeGirisTarihi': SuruyeGirisTarihi,
+            'DogumTarihi': DogumTarihi,
+            'Aciklama': Aciklama,
+            'TohumlanmaTarihi': TohumlanmaTarihi,
+            'Foto1Base64': document.getElementById("hdnImgBase64_1").value,
+            'Foto2Base64': document.getElementById("hdnImgBase64_2").value,
+            'Foto3Base64': document.getElementById("hdnImgBase64_3").value,
+                'Foto4Base64': document.getElementById("hdnImgBase64_4").value,
+                'DogumGucMu': document.querySelector('input[name="DogumGucMu"]:checked').value,
+                'EsiniSonunuAttiMi': document.querySelector('input[name="EsiniSonunuAttiMi"]:checked').value,
+            'DurumBilgisiId': '@ViewBag.DurumId',
+            'Fotograf': '@ViewBag.Fotograf',
+            'SonDogumYaptigiTarih': SonDogumYaptigiTarih,
+            'SuruyeGirisDurumId': SuruyeGirisDurumId,
+            'GebelikDurumId': GebelikDurumId,
+            'SatinAlmaFiyati': SatinAlmaFiyati,
+            'LaktasyonSayisi': LaktasyonSayisi
+        });
+
+        //console.log("Response: " + JSON.stringify(dataObject));
+
+        $.ajax({
+            type: "POST",
+            url: '/Hayvanlar/HayvanEkleAction',
+            data: dataObject,
+            success: function (response) {
+                //console.log("Response: " + JSON.stringify(response))
+                if (response.IsSuccess) {
+                    bootbox.dialog({
+                        message: "İşlem başarılı",
+                        title: "İşlem Tamamlandı. Kayıt Başarılı.",
+                        buttons: {
+                            success: {
+                                label: "Tamam",
+                                className: "green",
+                                callback: function () {
+                                    location.reload();
+                                }
+                            }
+                        }
+                    });
+                }
+                else {
+                    if (response.MessageCode != -1) {
+                        ShowInfoFunctionBox(response.Message);
+                    }
+                    else {
+                        console.log(response.Message);
+                    }
+                }
+            }
+        });
+    }
+
+</script>
+
+<script>
+
+    function maxLengthCheck(object) {
+        if (object.value.length > object.maxLength)
+            object.value = object.value.slice(0, object.maxLength)
+    }
+
+    function isNumeric(evt) {
+        var theEvent = evt || window.event;
+        var key = theEvent.keyCode || theEvent.which;
+        key = String.fromCharCode(key);
+        var regex = /[0-9]|\./;
+        if (!regex.test(key)) {
+            theEvent.returnValue = false;
+            if (theEvent.preventDefault) theEvent.preventDefault();
+        }
+    }
+
+</script>
+
+<script>
+    $('#HayvanEkle').addClass("active");
+</script>

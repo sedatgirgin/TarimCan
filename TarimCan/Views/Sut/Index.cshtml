@@ -1,0 +1,518 @@
+﻿@using TarimCan.Models
+@using TarimCan.Helper
+
+@model SutIndexModel
+
+@{
+    ViewBag.Title = "Günlük Süt Yönetimi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-12">
+    <div class="portlet light bordered" style="min-height:705px">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="fa-light fa-wine-bottle font-green-sharp"></i>
+                <span class="caption-subject font-green-sharp bold uppercase">SÜT YÖNETİMİ</span> -
+                <a href="https://www.youtube.com/watch?v=Zm51mv885aI&t=83s" target="_blank"> <img src="~/DashboardTheme/assets/global/ana-icons/youtube-full-logo.png" style="height:20px" title="Yardım Videosu"></a>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-horizontal">
+                            <div class="form-body">
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label bold">İşlem Tarihi</label>
+                                    <div class="col-md-4">
+                                        <input type="date" id="IslemZamani" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" onchange="RefreshDate(this.value)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="portlet-title">
+                    <div class="caption" style="text-align:center; margin:10px">
+                        <i class="fa-light fa-wine-bottle font-red-sunglo"></i>
+                        <span class="caption-subject font-red-sunglo bold uppercase">ÇİĞ SÜT SATIŞ BİLGİLERİ</span>
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <table class="table table-hover table-light">
+                        <thead>
+                            <tr>
+                                <th width="5%" style="text-align:center">#</th>
+                                <th width="25%" style="text-align:center">Litre Fiyatı</th>
+                                <th width="25%" style="text-align:center">Toplam Litre</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="text-align:center;">
+                                    Toplu Satış
+                                </td>
+                                <td style="text-align:center;">
+                                    @if (Model.GunlukSutSatislari != null)
+                                    {
+                                        <input type="number" class="form-control" id="tplLitre" autocomplete="off" value="@Model.GunlukSutSatislari.TopluLitreFiyati.ToString().Replace(",",".")">
+                                    }
+                                    else
+                                    {
+                                        <input type="number" class="form-control" id="tplLitre" autocomplete="off">
+                                    }
+                                </td>
+                                <td style="text-align:center">
+                                    @if (Model.GunlukSutSatislari != null)
+                                    {
+                                        <input type="number" class="form-control" id="tplToplam" autocomplete="off" value="@Model.GunlukSutSatislari.GunlukTopluSatisMiktari.ToString().Replace(",",".")">
+                                    }
+                                    else
+                                    {
+                                        <input type="number" class="form-control" id="tplToplam" autocomplete="off">
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center;">
+                                    Perakende Satış
+                                </td>
+                                <td style="text-align:center;">
+                                    @if (Model.GunlukSutSatislari != null)
+                                    {
+                                        <input type="number" class="form-control" id="prkLitre" autocomplete="off" value="@Model.GunlukSutSatislari.PerakendeLitreFiyati.ToString().Replace(",",".")">
+                                    }
+                                    else
+                                    {
+                                        <input type="number" class="form-control" id="prkLitre" autocomplete="off">
+                                    }
+                                </td>
+                                <td style="text-align:center">
+                                    @if (Model.GunlukSutSatislari != null)
+                                    {
+                                        <input type="number" class="form-control" id="prkToplam" autocomplete="off" value="@Model.GunlukSutSatislari.PerakendeSatisMiktari.ToString().Replace(",",".")">
+                                    }
+                                    else
+                                    {
+                                        <input type="number" class="form-control" id="prkToplam" autocomplete="off">
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center;">
+                                    Buzağıların içtiği süt
+                                </td>
+                                <td style="text-align:center">
+                                    &nbsp;
+                                </td>
+                                <td style="text-align:center">
+                                    @if (Model.GunlukSutSatislari != null)
+                                    {
+                                        <input type="number" class="form-control" id="bzgToplam" autocomplete="off" value="@Model.GunlukSutSatislari.BuzagiIctigiToplamLitre.ToString().Replace(",",".")">
+                                    }
+                                    else
+                                    {
+                                        <input type="number" class="form-control" id="bzgToplam" autocomplete="off">
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center;">
+                                    &nbsp;
+                                </td>
+                                <td style="text-align:center">
+                                    &nbsp;
+                                </td>
+                                <td style="text-align:center">
+                                    <button id="btnKaydet" type="submit" class="btn green" onclick="GunlukSutSatisiKaydet()" style="width:100%">Kaydet</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="portlet light">
+                        <div class="portlet-title tabbable-line">
+                            <div class="caption caption-md">
+                                <i class="icon-globe theme-font hide"></i>
+                                <span class="caption-subject font-red-sunglo bold uppercase">FİNANSAL AKIŞ</span>
+                            </div>
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a href="#tab_1_1" data-toggle="tab">
+                                        Grafik
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#tab_1_2" data-toggle="tab">
+                                        Liste
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="portlet-body">
+                            <!--BEGIN TABS-->
+                            <div class="tab-content">
+
+
+                                <div class="tab-pane active" id="tab_1_1">
+                                    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+                                </div>
+
+                                <div class="tab-pane" id="tab_1_2">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            @{
+                                                if (Model.GecmisSutOzeti != null)
+                                                {
+
+                                                    if (Model.GecmisSutOzeti.Count > 0)
+                                                    {
+
+                                                        <table class="table table-hover table-light">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th width="5%" style="text-align:center">#</th>
+                                                                    <th width="15%" style="text-align:center">Tarih</th>
+                                                                    <th width="15%" style="text-align:center">Satılan Süt Miktarı</th>
+                                                                    <th width="15%" style="text-align:center">Süt Satışı Gelirleri</th>
+                                                                    <th width="5%" style="text-align:center"></th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="tblHayvanResult">
+                                                                @{
+                                                                    int sayacSos = 1;
+
+                                                                    foreach (var item in Model.GecmisSutOzeti)
+                                                                    {
+                                                                        <tr>
+                                                                            <td style="text-align:center;">
+                                                                                @Convert.ToInt32(sayacSos++).ToString()
+                                                                            </td>
+                                                                            <td style="text-align:center;">
+                                                                                @item.IslemTarihi.ToString("dd.MM.yyyy")
+                                                                            </td>
+                                                                            <td style="text-align:center">
+                                                                                @item.GunlukSutMiktari Litre
+                                                                            </td>
+                                                                            <td style="text-align:center">
+                                                                                @item.GunlukSutSatisGelirleri.ToString("#.###") TL
+                                                                            </td>
+                                                                            <td style="text-align:center">
+                                                                                <a href="/Sut/Index?IslemZamani=@item.IslemTarihi.ToString("yyyy-MM-dd")" class="label label-sm label-info" style="cursor:pointer"> Güncelle </a>
+                                                                            </td>
+                                                                        </tr>
+                                                                    }
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>Listelenecek süt geçmişi bulunamadı...</span>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <span>Listelenecek süt geçmişi bulunamadı...</span>
+                                                }
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.AntiForgeryToken()
+</div>
+
+<script src="@Url.Content("~/DashboardTheme/assets/global/plugins/jquery.min.js")" type="text/javascript"></script>
+
+
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+<script>
+    window.onload = function () {
+
+
+        var chart = new CanvasJS.Chart("chartContainer", {
+
+            animationEnabled: true,
+            theme: "light2",
+            title: {
+                text: "Günlük Süt Satışları",
+                fontSize: 20
+            },
+            axisX: {
+                valueFormatString: "DD MMM",
+                crosshair: {
+                    enabled: true,
+                    snapToDataPoint: true
+                }
+            },
+            axisY: {
+                title: "Süt Miktarı",
+                includeZero: true,
+                crosshair: {
+                    enabled: true,
+                    snapToDataPoint: true
+                }
+            },
+            toolTip: {
+                shared: true
+            },
+            legend: {
+                cursor: "pointer",
+                verticalAlign: "bottom",
+                horizontalAlign: "left",
+                dockInsidePlotArea: true,
+                itemclick: toogleDataSeries
+            },
+            data: [{
+                type: "line",
+                showInLegend: true,
+                name: "Litre",
+                markerType: "square",
+                xValueFormatString: "DD MMM, YYYY",
+                color: "#4DB3A2",
+                dataPoints: [
+                    @Html.Raw(ViewBag.GunlukSutSatislari)
+                ]
+            } ]
+        });
+        chart.render();
+
+        function toogleDataSeries(e) {
+            if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                e.dataSeries.visible = false;
+            } else {
+                e.dataSeries.visible = true;
+            }
+            chart.render();
+        }
+
+    }
+</script>
+
+
+<script>
+
+    function RefreshDate(datetimeValue) {
+        location.href = "/Sut/Index?IslemZamani=" + datetimeValue;
+    }
+
+    $(function () {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const IslemZamani = urlParams.get('IslemZamani')
+        document.getElementById("IslemZamani").value = IslemZamani;
+    })
+
+    function IslenmisSutKaydet() {
+
+        var data = {
+            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+            'PeynirMiktarKg': document.getElementById("pynMiktar").value.replace('.', ','),
+            'PeynirKullanilanSutKg': document.getElementById("pynKullanilanSut").value.replace('.', ',').replace(',00', ''),
+            'PeynirSatisFiyati': document.getElementById("pynSatisFiyati").value.replace('.', ',').replace(',00', ''),
+            'PeynirToplamFiyat': document.getElementById("pynToplamFiyat").value.replace('.', ',').replace(',00', ''),
+            'YogurtMiktarKg': document.getElementById("ygrMiktar").value.replace('.', ',').replace(',00', ''),
+            'YogurtKullanilanSutKg': document.getElementById("ygrKullanilanSut").value.replace('.', ',').replace(',00', ''),
+            'YogurtSatisFiyati': document.getElementById("ygrSatisFiyati").value.replace('.', ',').replace(',00', ''),
+            'YogurtToplamFiyat': document.getElementById("ygrToplamFiyat").value.replace('.', ',').replace(',00', ''),
+            'TereyagMiktarKg': document.getElementById("tryMiktar").value.replace('.', ',').replace(',00', ''),
+            'TereyagKullanilanSutKg': document.getElementById("tryKullanilanSut").value.replace('.', ',').replace(',00', ''),
+            'TereyagSatisFiyati': document.getElementById("trySatisFiyati").value.replace('.', ',').replace(',00', ''),
+            'TereyagToplamFiyat': document.getElementById("tryToplamFiyat").value.replace('.', ',').replace(',00', ''),
+            'DigerMiktarKg': document.getElementById("dgrMiktar").value.replace('.', ',').replace(',00', ''),
+            'DigerKullanilanSutKg': document.getElementById("dgrKullanilanSut").value.replace('.', ',').replace(',00', ''),
+            'DigerSatisFiyati': document.getElementById("dgrSatisFiyati").value.replace('.', ',').replace(',00', ''),
+            'DigerToplamFiyat': document.getElementById("dgrToplamFiyat").value.replace('.', ',').replace(',00', ''),
+            'IslemTarihi': document.getElementById("IslemZamani").value
+        };
+
+        console.log("data", JSON.stringify(data));
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("SutUrunleriEkleAction", "Sut")',
+            data: data,
+            success: function (response) {
+                if (response.IsSuccess) {
+                    bootbox.dialog({
+                        message: "İşlem Tamamlandı. Kayıt Başarılı.",
+                        title: "İşlem başarılı",
+                        buttons: {
+                            success: {
+                                label: "Tamam",
+                                className: "green",
+                                callback: function () {
+                                    return;
+                                }
+                            }
+                        }
+                    });
+                }
+                else {
+                    if (response.MessageCode != -1) {
+                        ShowInfoFunctionBox(response.Message);
+                    }
+                    else {
+                        console.log(response.Message);
+                    }
+                }
+            }
+        });
+
+    }
+
+    function GunlukSutSatisiKaydet() {
+
+        var data = {
+            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+            'TopluLitreFiyati': document.getElementById("tplLitre").value.replace('.', ',').replace(',00', ''),
+            'GunlukTopluSatisMiktari': document.getElementById("tplToplam").value.replace('.', ',').replace(',00', ''),
+            'PerakendeLitreFiyati': document.getElementById("prkLitre").value.replace('.', ',').replace(',00', ''),
+            'PerakendeSatisMiktari': document.getElementById("prkToplam").value.replace('.', ',').replace(',00', ''),
+            'BuzagiIctigiToplamLitre': document.getElementById("bzgToplam").value.replace('.', ',').replace(',00', ''),
+            'IslemTarihi': document.getElementById("IslemZamani").value
+        };
+
+        console.log("data", JSON.stringify(data));
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GunlukSutSatisiKaydetAction", "Sut")',
+            data: data,
+            success: function (response) {
+                if (response.IsSuccess) {
+                    bootbox.dialog({
+                        message: "İşlem Tamamlandı. Kayıt Başarılı.",
+                        title: "İşlem başarılı",
+                        buttons: {
+                            success: {
+                                label: "Tamam",
+                                className: "green",
+                                callback: function () {
+                                    return;
+                                }
+                            }
+                        }
+                    });
+                }
+                else {
+                    if (response.MessageCode != -1) {
+                        ShowInfoFunctionBox(response.Message);
+                    }
+                    else {
+                        console.log(response.Message);
+                    }
+                }
+            }
+        });
+
+    }
+
+</script>
+
+<script>
+
+    function TopluSatisChanged() {
+
+        var ToplamLitre = document.getElementById("tplToplam").value;
+
+        if (ToplamLitre != "") {
+            var ortLitre = ToplamLitre / 3;
+            document.getElementById("tplSabah").value = ortLitre;
+            document.getElementById("tplOglen").value = ortLitre;
+            document.getElementById("tplAksam").value = ortLitre;
+            console.log("TopluSatisChanged: Toplam Litre: " + ToplamLitre);
+        }
+        else {
+            console.log("TopluSatisChanged: Toplam Litre Null");
+        }
+    }
+
+    function PerakendeSatisChanged() {
+
+        var ToplamLitre = document.getElementById("prkToplam").value;
+
+        if (ToplamLitre != "") {
+            var ortLitre = ToplamLitre / 3;
+            document.getElementById("prkSabah").value = ortLitre;
+            document.getElementById("prkOglen").value = ortLitre;
+            document.getElementById("prkAksam").value = ortLitre;
+            console.log("PerakendeSatisChanged: Toplam Litre: " + ToplamLitre);
+        }
+        else {
+            console.log("PerakendeSatisChanged: Toplam Litre Null");
+        }
+    }
+
+    function BuzagiIctigiChanged() {
+
+        var ToplamLitre = document.getElementById("bzgToplam").value;
+
+        if (ToplamLitre != "") {
+            var ortLitre = ToplamLitre / 3;
+            document.getElementById("bzgSabah").value = ortLitre;
+            document.getElementById("bzgOglen").value = ortLitre;
+            document.getElementById("bzgAksam").value = ortLitre;
+            console.log("BuzagiIctigiChanged: Toplam Litre: " + ToplamLitre);
+        }
+        else {
+            console.log("BuzagiIctigiChanged: Toplam Litre Null");
+        }
+    }
+
+    function maxLengthCheck(object) {
+        if (object.value.length > object.maxLength)
+            object.value = object.value.slice(0, object.maxLength)
+    }
+
+    function isNumeric(evt) {
+        var theEvent = evt || window.event;
+        var key = theEvent.keyCode || theEvent.which;
+        key = String.fromCharCode(key);
+        var regex = /[0-9]|\./;
+        if (!regex.test(key)) {
+            theEvent.returnValue = false;
+            if (theEvent.preventDefault) theEvent.preventDefault();
+        }
+    }
+
+    function formatMoney(price) {
+        var currency_symbol = "₺"
+        var formattedOutput = new Intl.NumberFormat('tr-TR', {
+            style: 'currency',
+            currency: 'TRY',
+            minimumFractionDigits: 0,
+        });
+        return formattedOutput.format(price).replace(currency_symbol, '')
+    }
+
+</script>
+
+<script>
+    $('#SutYonetimi').addClass("open");
+    $('#SutYonetimiArrow').addClass("open");
+    $('#SutYonetimiSubMenu').css("display", "block");
+    $('#subMenuSutSatisBilgileri').addClass("active");
+</script>

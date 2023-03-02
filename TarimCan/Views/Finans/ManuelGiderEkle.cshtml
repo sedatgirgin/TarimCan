@@ -1,0 +1,178 @@
+﻿@using TarimCan.Models
+@using TarimCan.Helper
+
+@{
+    ViewBag.Title = "Hastalık Ekle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-12">
+    <div class="portlet light bordered" style=" min-height: 705px;">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-equalizer font-green-sharp"></i>
+                <span class="caption-subject font-green-sharp bold uppercase">MENUEL GİDER EKLE</span> -
+                <a href="https://www.youtube.com/watch?v=Zm51mv885aI&t=83s" target="_blank"> <img src="~/DashboardTheme/assets/global/ana-icons/youtube-full-logo.png" style="height:20px" title="Yardım Videosu"></a>
+            </div>
+        </div>
+        <div class="portlet-body form">
+            <!-- BEGIN FORM-->
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-md-3 control-label">İşlem Tarihi</label>
+                    <div class="col-md-4">
+                        <input type="date" class="form-control" id="IslemTarihi" autocomplete="off" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Gider Tipi</label>
+                    <div class="col-md-4">
+                        @Html.DropDownList("GelirGiderTipleri", new SelectList(ViewBag.GelirGiderTipleri, "Value", "Text"), "Seçiniz", new { @class = "form-control", @onchange = "GelirTipiChanged(this.value)" })
+                    </div>
+                </div>
+
+                <div class="form-group" id="rwDiger" style="display:none">
+                    <label class="col-md-3 control-label">Gider Kalemi</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" placeholder="gider kalemi" id="GelirGiderTipi">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Firma Adı</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" placeholder="müşteri adı soyadı" id="MusteriTedarikci">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Fatura No</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" placeholder="fatura no" id="FaturaNo">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Satış Tutarı</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" placeholder="satış tutarı" id="Tutari">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Açıklama</label>
+                    <div class="col-md-4">
+                        <textarea class="form-control" id="Aciklama" cols="5"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label">&nbsp;</label>
+                    <div class="col-md-4">
+                        <button id="btnSosYardOde" type="submit" class="btn green" onclick="Kaydet()" style="width:100%">Gider Kaydet</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.AntiForgeryToken()
+</div>
+
+<script src="@Url.Content("~/DashboardTheme/assets/global/plugins/jquery.min.js")" type="text/javascript"></script>
+
+<script>
+
+
+    function GelirTipiChanged(val) {
+
+        console.log("val: " + val);
+
+        document.getElementById("rwDiger").style.display = 'none';
+
+        if (val == 999999) {
+            document.getElementById("rwDiger").style.display = 'block';
+        }
+
+    }
+
+    function Kaydet() {
+
+        var IslemTarihi = document.getElementById("IslemTarihi").value;
+        var GelirGiderTipId = document.getElementById("GelirGiderTipleri").value;
+        var GelirGiderTipi = $("#GelirGiderTipleri option:selected").text();
+        var Tutari = document.getElementById("Tutari").value;
+        var MusteriTedarikci = document.getElementById("MusteriTedarikci").value;
+        var FaturaNo = document.getElementById("FaturaNo").value;
+        var Aciklama = document.getElementById("Aciklama").value;
+
+        if (GelirGiderTipId == "") {
+            ShowErrorMessageBox("Gider Tipini Seçiniz...");
+            return;
+        }
+
+        if (GelirGiderTipId == 999999 && document.getElementById("GelirGiderTipi").value == "") {
+            ShowErrorMessageBox("Gider Kalemini Yazınız...");
+            return;
+        }
+
+        if (GelirGiderTipId == 999999 && document.getElementById("GelirGiderTipi").value != "") {
+            GelirGiderTipi = document.getElementById("GelirGiderTipi").value;
+        }
+
+        if (Tutari == "") {
+            ShowErrorMessageBox("Gider Tutarını Yazınız...");
+            return;
+        }
+
+        var data = {
+            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+            'IslemTarihi': IslemTarihi,
+            'GelirGiderTipId': GelirGiderTipId,
+            'GelirGiderTipId': GelirGiderTipId,
+            'GelirGiderTipi': GelirGiderTipi,
+            'Tutari': Tutari,
+            'MusteriTedarikci': MusteriTedarikci,
+            'FaturaNo': FaturaNo,
+            'Aciklama': Aciklama
+        };
+
+        console.log("data", JSON.stringify(data));
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("ManuelGiderEkleAction", "Finans")',
+            data: data,
+            success: function (response) {
+                if (response.IsSuccess) {
+                    bootbox.dialog({
+                        message: "İşlem Tamamlandı. Kayıt Başarılı.",
+                        title: "İşlem başarılı",
+                        buttons: {
+                            success: {
+                                label: "Tamam",
+                                className: "green",
+                                callback: function () {
+                                    location.href = "/Finans/FinansalIndex";
+                                }
+                            }
+                        }
+                    });
+                }
+                else {
+                    if (response.MessageCode != -1) {
+                        ShowInfoFunctionBox(response.Message);
+                    }
+                    else {
+                        console.log(response.Message);
+                    }
+                }
+            }
+        });
+    }
+
+</script>
+
+<script>
+    $('#FinansalYonetim').addClass("active");
+</script>

@@ -1,0 +1,191 @@
+﻿@using TarimCan.Models
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="col-md-12">
+    <div class="portlet light bordered">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-equalizer font-red-sunglo"></i>
+                <span class="caption-subject font-red-sunglo bold uppercase">UZMANINA SORUN</span>
+            </div>
+        </div>
+        <div class="portlet-body form" style="min-height: 619px;">
+            <!-- BEGIN FORM-->
+            <div class="form-horizontal">
+                <div class="form-body">
+
+                    @{
+                        if (ViewBag.Sorular != null)
+                        {
+
+                            List<UzmanaSorModel> sorular = ViewBag.Sorular;
+
+                            if (sorular.Count > 0)
+                            {
+                                <div class="row">
+                                    <span class="caption-subject font-red-sunglo bold uppercase" style="margin-left:30px; font-size:15px">GEÇMİŞ SORULAR</span>
+                                </div>
+                                <table class="table table-hover table-light">
+                                    <thead>
+                                        <tr class="uppercase">
+                                            <th width="5%" style="text-align:center">No</th>
+                                            <th width="15%">Kategori</th>
+                                            <th width="20%">Başlık</th>
+                                            <th width="20%">Soru Detayı</th>
+                                            <th width="30%">Cevap</th>
+                                            <th width="10%">Kayıt Tarihi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            int sayacSos = 1;
+
+                                            foreach (var item in sorular)
+                                            {
+                                                <tr>
+                                                    <td style="text-align:center">@Convert.ToInt32(sayacSos++).ToString()</td>
+                                                    <td>
+                                                        @item.Kategori
+                                                    </td>
+                                                    <td>
+                                                        @item.Baslik
+                                                    </td>
+                                                    <td>
+                                                        @item.Aciklama
+                                                    </td>
+                                                    <td>
+                                                        @if (!item.CevaplandiMi)
+                                                        {
+                                                            <span>Cevabınız hazırlanıyor. En kısa sürede bilgilendirileceksiniz...</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            @item.CevapMetni
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        @item.KayitTarihi.ToString("dd.MM.yyyy")
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <span>Listelenecek hayvan bulunamadı...</span>
+                            }
+                        }
+                        else
+                        {
+                            <span></span>
+                        }
+                    }
+
+                    <div style="margin-top:20px">&nbsp;</div>
+                    <div class="alert alert-danger">
+                        <strong>Uyarı!</strong> Sorunuzun sıraya alınacak ve mümkün olan en kısa sürede cevaplanacaktır. Cevaplama süresi sırada bekleyen sorulara göre değişkenlik gösterebilir.
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">&nbsp;</label>
+                        <div class="col-md-5">
+                            <label class="control-label caption-subject font-red-sunglo bold uppercase">YENİ SORU SOR</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Kategori</label>
+                        <div class="col-md-5">
+                            <select class="form-control" id="KategoriId">
+                                <option value="0" selected>Seçiniz...</option>
+                                <option value="1">Tavsiye</option>
+                                <option value="2">İstek</option>
+                                <option value="3">Öneri</option>
+                                <option value="4">Şikayet</option>
+                                <option value="5">Diğer</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Başlık</label>
+                        <div class="col-md-5">
+                            <input type="text" id="Baslik" class="form-control" placeholder="konu başlığı" autocomplete="off" maxlength="100">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Sorunuz</label>
+                        <div class="col-md-5">
+                            <textarea class="form-control" rows="7" id="Aciklama" placeholder="açıklama" maxlength="1000"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <div class="row">
+                        <div class="col-md-offset-3 col-md-9">
+                            <button type="submit" class="btn green" onclick="Kaydet()">Soruyu Gönder</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END FORM-->
+        </div>
+        @Html.AntiForgeryToken()
+    </div>
+</div>
+
+<script src="@Url.Content("~/DashboardTheme/assets/global/plugins/jquery.min.js")" type="text/javascript"></script>
+
+<script>
+
+
+    function Kaydet() {
+        var KategoriId = document.getElementById("KategoriId").value;
+        var Baslik = document.getElementById("Baslik").value;
+        var Aciklama = document.getElementById("Aciklama").value;
+
+        if (KategoriId == "" || Baslik == "" || Aciklama == "") {
+            ShowInfoFunctionBox("Lütfen tüm alanları doldurunuz...");
+            return;
+        }
+
+        var data = (
+        {
+            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+            'KategoriId': KategoriId,
+            'Baslik': Baslik,
+            'Aciklama': Aciklama
+        });
+
+       // console.log("dataObject: " + JSON.stringify(data));
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("UzmanaSorKaydetAction", "UzmanaSor")',
+            data: data,
+            success: function (response) {
+               // console.log("Response: " + JSON.stringify(response))
+                if (response.IsSuccess) {
+                    ShowInfoFunctionBox(response.Message);
+                }
+                else {
+                    ShowErrorMessageBox(response.Message);
+                }
+            }
+        });
+
+    }
+
+</script>
+
+<script>
+    $('#Profilim').addClass("active");
+</script>

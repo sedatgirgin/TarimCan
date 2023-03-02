@@ -1,0 +1,238 @@
+﻿@using TarimCan.Models
+@using TarimCan.Helper
+
+@{
+    ViewBag.Title = "Hayvan Ekle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-12">
+    <div class="portlet light bordered minHeight">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-equalizer font-green-sharp"></i>
+                <span class="caption-subject font-green-sharp bold uppercase">KESİM / ÖLÜM BİLGİSİ KAYDET</span> -
+                <a href="https://www.youtube.com/watch?v=Zm51mv885aI&t=83s" target="_blank"> <img src="~/DashboardTheme/assets/global/ana-icons/youtube-full-logo.png" style="height:20px" title="Yardım Videosu"></a>
+            </div>
+            <div class="actions">
+                <a href="/TopluIslemler/Kesim" class="btn btn-circle btn-default">
+                    <i class="fa fa-plus"></i>
+                    <span class="hidden-480">
+                        Toplu Hayvan Kesime Gönder
+                    </span>
+                </a>
+            </div>
+        </div>
+        <div class="portlet-body form">
+            <!-- BEGIN FORM-->
+            <div class="form-horizontal">
+                @{
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">İşlem Tarihi</label>
+                        <div class="col-md-4">
+                            <input type="date" class="form-control" data-format="00-00-0000" placeholder="dd-mm-yyyy" id="IslemTarihi" autocomplete="off">
+                        </div>
+                    </div> 
+
+                    <div id="rwOlumSecenek">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Ölüm Tipi</label>
+                            <div class="col-md-4">
+                                <select id="ddlOlumTipleri" class="form-control">
+                                    <option value="">Seçiniz</option>
+                                    <option value="1">Kaza</option>
+                                    <option value="2">Hastalık</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="rwHastalik" style="display:none">
+                            <label class="col-md-3 control-label">Hastalığı</label>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" placeholder="hastalığı" id="Hastalik">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">&nbsp;</label>
+                        <div class="col-md-4">
+                            <button id="btnSosYardOde" type="submit" class="btn green" onclick="Kaydet()" style="width:100%">Durum Bilgisi Kaydet</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    @Html.AntiForgeryToken()
+</div>
+
+<script src="@Url.Content("~/DashboardTheme/assets/global/plugins/jquery.min.js")" type="text/javascript"></script>
+
+<script>
+
+    var HesaplananKesimFiyati = 0;
+
+    $(function () {
+        document.getElementById('ddlOlumTipleri').setAttribute('onchange', 'OlumTipiChanged();');
+
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const IslemTarihi = urlParams.get('IslemTarihi')
+        document.getElementById("IslemTarihi").value = IslemTarihi;
+    })
+
+    function OlumTipiChanged() {
+
+        document.getElementById("rwHastalik").style.display = 'none';
+
+        if (document.getElementById("ddlOlumTipleri").value == 2) {
+            document.getElementById("rwHastalik").style.display = 'block';
+        }
+    } 
+
+    function formatMoney(price ) {
+
+        var currency_symbol = "₺"
+        var formattedOutput = new Intl.NumberFormat('tr-TR', {
+            style: 'currency',
+            currency: 'TRY',
+            minimumFractionDigits: 2,
+        });
+        return formattedOutput.format(price).replace(currency_symbol, '')
+    }
+
+    function KesimYeriChanged() {
+
+        document.getElementById("KesimFiyati").disabled = false;
+        document.getElementById("KesimFiyati").value = "";
+        document.getElementById("KarkasAgirligi").value = "";
+
+        var val = document.getElementById("KesimYerleri").value;
+        console.log("val: " + val);
+        if (val == 2) {
+            document.getElementById("rwKesimSecenek").style.display = 'block';
+        }
+
+        if (val == 1) {
+        }
+    }
+
+    function KesimFiyatiHesapla() {
+
+        let GuncelKesimFiyati = '@StaticVariable.CanliHayvanKgKesimFiyati';
+
+        var KesimYeriId = document.getElementById("KesimYerleri").value;
+        var KarkasAgirligi = document.getElementById("KarkasAgirligi").value;
+
+        if (KesimYeriId == 1) {
+            HesaplananKesimFiyati = parseInt(KarkasAgirligi) * parseInt(GuncelKesimFiyati);
+            document.getElementById("KesimFiyati").value = formatMoney(HesaplananKesimFiyati) + ' TL';
+            document.getElementById('KesimFiyati').setAttribute('disabled', '');
+        }
+
+        console.log("HesaplananKesimFiyati: " + HesaplananKesimFiyati);
+    }
+
+    function Kaydet() {
+
+        var Aciklama = ""; 
+
+        if (document.getElementById("ddlOlumTipleri").value == "") {
+            ShowErrorMessageBox("Ölüm Tipiniz Seçiniz..."); return;
+        }
+
+        Aciklama += $("#ddlOlumTipleri option:selected").text() + " / ";
+        Aciklama += document.getElementById("Hastalik").value;
+
+        console.log("Ölüm Açıklama: " + Aciklama);
+
+        bootbox.dialog({
+            message: "Yapılacak bu işlemler geri alınamayacak ve hayvan listenizden düşecektir. Onaylıyor musunuz?",
+            title: "Uyarı",
+            buttons: {
+                success: {
+                    label: "Onaylıyorum",
+                    className: "green",
+                    callback: function () {
+
+                        var data = {
+                            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+                            'HayvanId': @ViewBag.HayvanId,
+                            'DurumBilgisiId': @ViewBag.DurumId,
+                            'IslemTarihi': document.getElementById("IslemTarihi").value,
+                            'Aciklama': Aciklama
+                        };
+
+                        console.log("data", JSON.stringify(data));
+
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("HayvanOlumEkleAction", "Hayvanlar")',
+                            data: data,
+                            success: function (response) {
+                                if (response.IsSuccess) {
+                                    bootbox.dialog({
+                                        message: "İşlem başarılı",
+                                        title: "İşlem Tamamlandı. Kayıt Başarılı.",
+                                        buttons: {
+                                            success: {
+                                                label: "Tamam",
+                                                className: "green",
+                                                callback: function () {
+                                                    location.href = "/Hayvanlar/Index/";
+                                                }
+                                            }
+                                        }
+                                    });
+                                }
+                                else {
+                                    if (response.MessageCode != -1) {
+                                        ShowInfoFunctionBox(response.Message);
+                                    }
+                                    else {
+                                        console.log(response.Message);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                },
+                error: {
+                    label: "İptal Et",
+                    className: "red",
+                    callback: function () {
+                        return;
+                    }
+                }
+            }
+        });
+
+    }
+
+</script>
+
+<script>
+
+    function maxLengthCheck(object) {
+        if (object.value.length > object.maxLength)
+            object.value = object.value.slice(0, object.maxLength)
+    }
+
+    function isNumeric(evt) {
+        var theEvent = evt || window.event;
+        var key = theEvent.keyCode || theEvent.which;
+        key = String.fromCharCode(key);
+        var regex = /[0-9]|\./;
+        if (!regex.test(key)) {
+            theEvent.returnValue = false;
+            if (theEvent.preventDefault) theEvent.preventDefault();
+        }
+    }
+
+</script>
+
+<script>
+    $('#HayvanEkle').addClass("active");
+</script>

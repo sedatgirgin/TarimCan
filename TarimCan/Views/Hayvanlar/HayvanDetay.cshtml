@@ -1,0 +1,751 @@
+﻿@using TarimCan.Models
+
+@model HayvanDetayResponseModel
+
+@{
+    ViewBag.Title = "Hayvan Detay";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/DashboardTheme/LightBox/css/lightbox.css" rel="stylesheet" />
+
+<link href="~/DashboardTheme/modules/timeline/css/timeline.min.css" rel="stylesheet" />
+
+<div class="col-md-12">
+
+    <div class="portlet light bordered" style="min-height:620px">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row" style="min-height:300px;">
+                    <div class="col-md-12" id="pnlHayvanBilgileri">
+                        <div class="portlet light" style="padding:0 !important; font-size:13px !important; margin:0px !important">
+                            <div class="portlet-title" style="margin-bottom:0px !important">
+                                <div class="caption">
+                                    <i class="icon-equalizer font-red-sunglo"></i>
+                                    <span class="caption-subject font-red-sunglo bold uppercase" style="font-size:15px">HAYVAN BİLGİLERİ</span>
+                                </div>
+
+                                <div class="actions" style="margin-left:10px">
+                                    <a href="javascript:;" class="btn btn-circle btn-default" onclick="HayvanSil()" style="background-color: #E26A6A; color:black; font-weight:bold">
+                                        <i class="fa fa-trash-o" style="color: black;"></i>
+                                        <span class="hidden-480">
+                                            Hayvanı Sil
+                                        </span>
+                                    </a>
+                                </div>
+
+                                <div class="actions">
+                                    <a href="/Hayvanlar/HayvanGuncelle/@Model.HayvanDetay.Id" class="btn btn-circle btn-default" style="background-color: #4DB3A2; color: black; font-weight: bold">
+                                        <i class="fa fa-edit" style="color: black;"></i>
+                                        <span class="hidden-480">
+                                            Düzenle
+                                        </span>
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="portlet-body">
+                            <div id="pnlHayvanBilgiLoading" style="width:100%; height:250px; text-align:center; display:none">
+                                <img src="~/DashboardTheme/assets/admin/layout4/img/app_loading.gif" width="75" height="75" />
+                            </div>
+
+                            <div class="col-md-12" style="margin: 0 !important; padding: 0 !important">
+                                <table class="table table-hover table-light">
+                                    <tbody>
+                                        <tr>
+                                            <td width="10%" style="font-weight:bold"> Küpe No: </td>
+                                            <td width="23%" id="dtyKupeNo"> @Model.HayvanDetay.KupeNo </td>
+                                            <td width="10%" style="font-weight:bold"> Adı / Takip Numarası: </td>
+                                            <td width="23%" id="dtyAdi"> @Model.HayvanDetay.Adi </td>
+                                            <td width="10%" style="font-weight:bold"> Gebelik Durumu: </td>
+                                            <td width="23%" id="dtyAdi">
+                                                @if (Model.HayvanDetay.GebelikDurumId != 0)
+                                                {
+                                                    <span>Gebe</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>Gebe Değil</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="10%" style="font-weight:bold"> Kayıt Tarihi: </td>
+                                            <td width="23%" id="dtyKayitTarihi"> @Model.HayvanDetay.KayitTarihiFormatted </td>
+                                            <td width="10%" style="font-weight:bold"> Cinsiyeti: </td>
+                                            <td width="23%" id="dtyCinsiyeti"> @Model.HayvanDetay.Cinsiyet </td>
+                                            <td width="10%" style="font-weight:bold"> Sağmal Durumu: </td>
+                                            <td width="23%" id="dtyAdi"> @Model.HayvanDetay.SagmalDurumu </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="10%" style="font-weight:bold"> Irkı: </td>
+                                            <td width="23%" id="dtyIrki"> @Model.HayvanDetay.Irk </td>
+                                            <td width="10%" style="font-weight:bold"> Doğum Tarihi: </td>
+                                            <td width="23%" id="dtyDogumTarihi"> @Model.HayvanDetay.DogumTarihiFormatted </td>
+                                            <td width="10%" style="font-weight:bold"> Son Tohumlanma Tarihi: </td>
+                                            <td width="23%" id="dtyAdi">
+                                                @if (Model.HayvanDetay.TohumlanmaTarihi != null)
+                                                {
+                                                    @Model.HayvanDetay.TohumlanmaTarihi.Value.ToString("dd.MM.yyyy")
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="10%" style="font-weight:bold"> Anne Küpe: </td>
+                                            <td width="23%" id="dtyAnneKupeNo"> @Model.HayvanDetay.AnneKupeNo </td>
+                                            <td width="10%" style="font-weight:bold"> Baba Küpe: </td>
+                                            <td width="23%" id="dtyBabaKupeNo"> @Model.HayvanDetay.BabaKupeNo </td>
+                                            <td width="10%" style="font-weight:bold"> Laktasyon Sayısı: </td>
+                                            <td width="23%" id="dtyAdi"> @Model.HayvanDetay.LaktasyonSayisi </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="10%" style="font-weight:bold"> Sürüye Giriş Tarihi: </td>
+                                            <td width="23%" id="dtySuruyeGirisTarihi"> @Model.HayvanDetay.SuruyeGirisTarihiFormatted </td>
+                                            <td width="10%" style="font-weight:bold"> Sürüye Giriş Tipi: </td>
+                                            <td width="23%" id="dtySuruyeGirisTipi"> @Model.HayvanDetay.SuruyeGirisTipi </td>
+                                            <td width="10%" style="font-weight:bold"> Tohumlanma Sayısı: </td>
+                                            <td width="23%" id="dtyAdi"> @Model.HayvanDetay.TohumlanmaSayisi </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="10%" style="font-weight:bold"> Padok Bilgisi: </td>
+                                            <td width="23%"> @Model.HayvanDetay.PadokAdi </td>
+
+                                            <td width="10%" style="font-weight:bold"> Son Doğum Yaptığı Tarih: </td>
+                                            <td width="23%" id="dtySuruyeGirisTipi">
+                                                @if (Model.HayvanDetay.CinsiyetId == 1 && Model.HayvanDetay.SonDogumYaptigiTarihFormatted != "01.01.9999")
+                                                {
+                                                    @Model.HayvanDetay.SonDogumYaptigiTarihFormatted
+                                                }
+                                            </td>
+                                            <td width="10%" style="font-weight:bold"> SGS: </td>
+                                            <td width="23%" id="dtyAdi"> @Model.HayvanDetay.SGS </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td width="10%" style="font-weight:bold"> Kilosu: </td>
+                                            <td width="23%"> @Model.HayvanDetay.Kilosu </td>
+                                            <td width="10%" style="font-weight:bold"> Sürü Bilgisi: </td>
+                                            <td width="23%" id="dtyAdi"> @Model.HayvanDetay.SuruGrubu </td>
+                                            <td width="10%" style="font-weight:bold"> Görev Geçmişi: </td>
+                                            <td width="23%" id="dtySaglikKarnesi"> <span style="cursor:pointer" onclick="HayvanGecmisGorevlerineGit()"> Detay Göster </span></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="10%" style="font-weight:bold"> Açıklama: </td>
+                                            <td width="90%" colspan="3" id="dtyAciklama"> @Model.HayvanDetay.Aciklama </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            @{
+                                if (Model.HayvanDetay.Fotograflar.Count > 0)
+                                {
+                                    <div class="portlet-title" style="margin-bottom:0px !important">
+                                        <div class="caption">
+                                            <i class="icon-equalizer font-red-sunglo"></i>
+                                            <span class="caption-subject font-red-sunglo bold uppercase" style="font-size:15px">HAYVAN FOTOĞRAFLARI</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="portlet-body">
+                                        <div class="col-md-12" style="margin: 0 !important; padding: 0 !important">
+                                            <div class="row" id="rowFoto">
+
+                                                @if (Model.HayvanDetay.Fotograflar[0] != "")
+                                                {
+                                                    foreach (var item in Model.HayvanDetay.Fotograflar)
+                                                    {
+                                                        <div class="col-md-3">
+                                                            <a class="example-image-link" href="/YuklenenDosyalar/HayvanFotograflari/@item" data-lightbox="example-set"><img style="width: 120px;height: 150px;" src="/YuklenenDosyalar/HayvanFotograflari/@item" /></a>
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" id="pnlDurumHareketleri">
+                    <div class="col-md-12">
+                        <div class="portlet light" style="padding:0 !important; font-size:13px !important; margin:0px !important">
+                            <div class="portlet-title" style="margin-bottom:0px !important">
+                                <div class="caption">
+                                    <i class="icon-equalizer font-red-sunglo"></i>
+                                    <span class="caption-subject font-red-sunglo bold uppercase" style="font-size:15px">HAYVAN YAŞAM DÖNGÜSÜ</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="portlet-body">
+
+                            <div class="timeline">
+                                <div class="timeline__wrap">
+                                    <div class="timeline__items">
+
+                                        <div class="timeline__item">
+                                            <div class="timeline__content" style="text-align: center;">
+                                                <h2>Doğdu</h2>
+                                                <img src="~/DashboardTheme/assets/global/durum-icons/1.png" style="width:60px; height:60px; text-align:center" />
+                                                <p>
+                                                    @Model.HayvanDetay.DogumTarihiFormatted
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        @{
+                                            foreach (var item in Model.DurumHareketleriReverse)
+                                            {
+                                                <div class="timeline__item">
+                                                    <div class="timeline__content" style="text-align: center;">
+                                                        <h2>@item.DurumBilgisi</h2>
+
+                                                        <img src="~/DashboardTheme/assets/global/durum-icons/@item.Icon" style="width:60px; height:60px; text-align:center" />
+                                                        <p>
+                                                            @item.IslemTarihi.ToString("dd.MM.yyyy")
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" id="pnlDurumHareketleri">
+                    <div class="col-md-12">
+                        <div class="portlet light" style="padding:0 !important; font-size:13px !important; margin:0px !important">
+                            <div class="portlet-title" style="margin-bottom:0px !important">
+                                <div class="caption">
+                                    <i class="icon-equalizer font-red-sunglo"></i>
+                                    <span class="caption-subject font-red-sunglo bold uppercase" style="font-size:15px">HAYVAN DURUM AKIŞI</span>
+                                </div>
+
+                                <div class="actions">
+                                    <div onclick="ShowHideDurumBilgisiPanel()" class="btn btn-circle btn-default bold" style="background-color: #dfba49; color: white !important">
+                                        <i class="fa fa-plus" style=" color: white !important"></i>
+                                        <span class="hidden-480">
+                                            Hayvan Durum Hareketi Ekle
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin:10px; display:none" id="pnlDurumBilgisiEkle">
+                            <div class="row">
+                                <div class="col-md-2"><label class="control-label" style="padding-top:5px;">Durum Bilgisi</label></div>
+                                <div class="col-md-4">
+                                    @Html.DropDownList("DurumBilgileri", new SelectList(ViewBag.DurumBilgileri, "Value", "Text"), "Seçiniz", new { @class = "form-control", @onchange = "DurumBilgisiChanged(this.value)" })
+                                </div>
+                                <div class="col-md-2" style="padding-top:5px;">İşlem Tarihi</div>
+                                <div class="col-md-4">
+                                    <input type="date" class="form-control" data-format="00-00-0000" placeholder="dd-mm-yyyy" id="DurumIslemTarihi" autocomplete="off" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-top:5px">
+                                <div class="col-md-2"><label id="lblDurumAciklama" class="control-label" style="padding-top:5px; display:none">Açıklama</label></div>
+                                <div class="col-md-4" id="pnlDurumBilgisi">
+                                    <input type="text" class="form-control" id="durumAciklama" autocomplete="off" style="display:none">
+                                    <select name="HastalikTipleri" id="HastalikTipleri" class="form-control" style="display:none">
+                                    </select>
+
+                                    <select name="ddlSagmalDurumu" id="ddlSagmalDurumu" class="form-control" style="display:none">
+                                        <option value="">Hayvan Durumu...</option>
+                                        <option value="20">Sağmal</option>
+                                        <option value="19">Boş</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-2" style="padding-top:5px;">&nbsp;</div>
+                                <div class="col-md-4">
+                                    <button id="btnHayvanDurumEkle" type="submit" class="btn green" onclick="DurumUygunlukKontrol()" style="width:100%">Durum Ekle</button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="portlet-body">
+                            <div id="pnlDurumHareketLoading" style="width:100%; height:250px; text-align:center; display: none">
+                                <img src="~/DashboardTheme/assets/admin/layout4/img/app_loading.gif" width="75" height="75" />
+                            </div>
+                            <div class="col-md-12" style="margin:0 !important; padding:0 !important">
+                                <table class="table table-hover table-light">
+                                    <tr role="row" class="heading">
+                                        <th width="5%" tabindex="0" rowspan="1" colspan="1">
+                                            Sıra
+                                        </th>
+                                        <th width="15%" tabindex="0" rowspan="1" colspan="1">
+                                            Durum Bilgisi
+                                        </th>
+                                        <th width="15%" tabindex="0" rowspan="1" colspan="1" style="text-align:center">
+                                            İşlem Tarihi
+                                        </th>
+                                        <th width="30%" tabindex="0" rowspan="1" colspan="1">
+                                            Açıklama
+                                        </th>
+                                        <th width="10%" tabindex="0" rowspan="1" colspan="1" style="text-align:center">
+                                            &nbsp;
+                                        </th>
+                                    </tr>
+                                    <tbody id="tblResult">
+                                        @{
+                                            int sayac = 1;
+                                            foreach (var item in Model.DurumHareketleri)
+                                            {
+                                                <tr>
+                                                    <td>@Convert.ToInt32(sayac++).ToString()</td>
+                                                    <td>@item.DurumBilgisi</td>
+                                                    <td style="text-align:center">
+                                                        @if (item.IslemTarihi.ToString("dd.MM.yyyy") != "01.01.0001")
+                                                        {
+                                                            @item.IslemTarihi.ToString("dd.MM.yyyy")
+                                                        }
+                                                    </td>
+                                                    <td>@item.AciklamaFormatted</td>
+                                                    <td style="text-align:right">
+                                                        @if (item.DurumBilgisiId == 2 && item.IslemSonlandiMi == false)
+                                                        {
+                                                            <button class="btn btn-sm green filter-cancel" onclick="GoToTedaviEkle()"><i class="fa-solid fa-suitcase-medical"></i></button>
+                                                        }
+
+                                                        @if (!@item.IslemSonlandiMi)
+                                                        {
+                                                            <button class="btn btn-sm red filter-cancel" onclick="DurumBilgisiSil(@item.Id)"><i class="fa fa-trash-o"></i></button>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="hdnFotograflar" />
+    <input type="hidden" id="hdnHayvanId" />
+    <input type="hidden" id="hdnCinsiyetId" />
+    @Html.AntiForgeryToken()
+</div>
+
+<script src="@Url.Content("~/DashboardTheme/assets/global/plugins/jquery.min.js")" type="text/javascript"></script>
+
+<script src="~/DashboardTheme/LightBox/js/lightbox.js"></script>
+
+<script src="~/DashboardTheme/modules/timeline/js/timeline.min.js"></script>
+
+<script>
+
+    function HayvanGecmisGorevlerineGit() {
+        location.href = "/Ajanda/HayvanGorevDetay/" + @Model.HayvanDetay.Id + "/0";
+    }
+
+    $(document).ready(function () {
+
+    });
+
+    timeline(document.querySelectorAll('.timeline'), {
+        forceVerticalMode: 700,
+        mode: 'horizontal',
+        verticalStartPosition: 'left',
+        visibleItems: 9
+    });
+
+    function GoToTedaviEkle() {
+        location.href = "/Hayvanlar/HastaHayvanlar";
+    }
+
+    function DurumBilgisiChanged(val) {
+
+        console.log("DurumBilgisiId: " + val);
+
+        document.getElementById("lblDurumAciklama").innerHTML = '';
+        $("#lblDurumAciklama").hide();
+        $("#durumAciklama").hide();
+        $("#HastalikTipleri").hide();
+        $("#ddlSagmalDurumu").hide();
+
+        if (val == 3 || val == 4 || val == 6) {
+            if (@Model.HayvanDetay.CinsiyetId == 2) {
+                ShowErrorMessageBox("Erkek hayvana doğum bilgisi girilemez...");
+                return;
+            }
+        }
+
+        if (val == 9) {
+            $("#lblDurumAciklama").show();
+            $("#durumAciklama").show();
+            $('#durumAciklama').attr('placeholder', 'kilosu');
+            document.getElementById("lblDurumAciklama").innerHTML = 'Açıklama';
+        }
+
+        if (val == 7) {
+            $("#lblDurumAciklama").show();
+            document.getElementById("lblDurumAciklama").innerHTML = 'Sağmal Durumu';
+            $("#ddlSagmalDurumu").show();
+        }
+    }
+
+    function HayvanDetayGetir(HayvanId, CinsiyetId) {
+
+        document.getElementById("hdnHayvanId").value = HayvanId;
+        document.getElementById("hdnCinsiyetId").value = CinsiyetId;
+
+        var data = {
+            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+            'HayvanId': HayvanId
+        };
+
+        console.log("data: " + JSON.stringify(data) + " CinsiyetId: " + CinsiyetId);
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("HayvanDetayGetir", "Hayvanlar")',
+            data: data,
+            success: function (response) {
+
+                //console.log("response: " + JSON.stringify(response));
+
+                if (response.IsSuccess) {
+                    document.getElementById("dtyKupeNo").innerHTML = response.HayvanDetay.KupeNo;
+                    document.getElementById("dtyAdi").innerHTML = response.HayvanDetay.Adi;
+                    document.getElementById("dtyCinsiyeti").innerHTML = response.HayvanDetay.Cinsiyet;
+                    document.getElementById("dtyIrki").innerHTML = response.HayvanDetay.Irk;
+                    document.getElementById("dtyDogumTarihi").innerHTML = response.HayvanDetay.DogumTarihiFormatted;
+                    document.getElementById("dtyAnneKupeNo").innerHTML = response.HayvanDetay.AnneKupeNo;
+                    document.getElementById("dtyBabaKupeNo").innerHTML = response.HayvanDetay.BabaKupeNo;
+                    document.getElementById("dtySuruyeGirisTarihi").innerHTML = response.HayvanDetay.SuruyeGirisTarihiFormatted;
+                    document.getElementById("dtySuruyeGirisTipi").innerHTML = response.HayvanDetay.SuruyeGirisTipi;
+                    document.getElementById("dtyKayitTarihi").innerHTML = response.HayvanDetay.KayitTarihiFormatted;
+                    document.getElementById("dtyAciklama").innerHTML = response.HayvanDetay.Aciklama;
+
+                    document.getElementById("rowFoto").innerHTML = "";
+                    if (response.HayvanDetay.Fotograflar.length > 0) {
+                        document.getElementById("pnlHayvanFotograflari").style.display = 'block';
+                        for (var i = 0; i < response.HayvanDetay.Fotograflar.length; i++) {
+                            console.log(response.HayvanDetay.Fotograflar[i]);
+                            $('#rowFoto').append('<div class="col-md-3"><a class="example-image-link" href="/YuklenenDosyalar/HayvanFotograflari/' + response.HayvanDetay.Fotograflar[i] + '" data-lightbox="example-set"><img style=\"width: 120px;height: 150px;\" src="/YuklenenDosyalar/HayvanFotograflari/' + response.HayvanDetay.Fotograflar[i] + '" /></a></div>');
+                        }
+                    }
+
+                    document.getElementById("tblResult").innerHTML = "";
+                    var sayac = 0;
+                    for (var k in response.DurumHareketleri) {
+                        sayac = sayac + 1;
+                        $('#tblResult').append('<tr><td>' + sayac + '</td> <td>' + response.DurumHareketleri[k].DurumBilgisi + '</td> <td>' + response.DurumHareketleri[k].IslemTarihiFormatted + '</td> <td>' + response.DurumHareketleri[k].KontrolTarihiFormatted + '</td> <td>' + response.DurumHareketleri[k].AciklamaFormatted + '</td> <td style="text-align:center"> <button class="btn btn-sm red filter-cancel" onclick="DurumBilgisiSil(' + response.DurumHareketleri[k].Id + ')"><i class="fa fa-trash-o"></i></button> </td>');
+                    }
+                }
+                else {
+                    ShowErrorMessageBox(response.Message);
+                }
+            },
+            error: function () {
+
+            },
+            beforeSend: function () {
+                document.getElementById("pnlHayvanBilgiLoading").style.display = 'block';
+                document.getElementById("pnlDurumHareketLoading").style.display = 'block';
+                document.getElementById("pnlHayvanBilgileri").style.display = 'none';
+                document.getElementById("pnlDurumHareketleri").style.display = 'none';
+                document.getElementById("pnlHayvanFotograflari").style.display = 'none';
+            },
+            complete: function () {
+                document.getElementById("pnlHayvanBilgiLoading").style.display = 'none';
+                document.getElementById("pnlDurumHareketLoading").style.display = 'none';
+                document.getElementById("pnlHayvanBilgileri").style.display = 'block';
+                document.getElementById("pnlDurumHareketleri").style.display = 'block';
+            }
+        });
+    }
+
+    function DurumBilgisiEkle() {
+
+        var DurumBilgisiId = document.getElementById("DurumBilgileri").value;
+        var IslemTarihi = document.getElementById("DurumIslemTarihi").value;
+        var ddlSagmalDurumu = document.getElementById("ddlSagmalDurumu").value;
+        var Aciklama = "";
+
+        if (DurumBilgisiId == 9) {
+            Aciklama = document.getElementById("durumAciklama").value;
+        }
+        else if (DurumBilgisiId == 2) {
+            Aciklama = $("#HastalikTipleri option:selected").text();
+        }
+
+        if (DurumBilgisiId == 6 && IslemTarihi == "") {
+            ShowErrorMessageBox("Doğum Tarihini Giriniz...");
+            return;
+        }
+        else if (DurumBilgisiId == 6 && IslemTarihi != ""){
+            const arr = IslemTarihi.split(".");
+            location.href = "/Hayvanlar/HayvanEkle?DurumId=6&HayvanId=" + @Model.HayvanDetay.Id + "&DogumTarihi=" + IslemTarihi;
+            return;
+        }
+
+        if (DurumBilgisiId == 5 && IslemTarihi == "") {
+            ShowErrorMessageBox("İşlem Tarihini Giriniz...");
+            return;
+        }
+        else if (DurumBilgisiId == 5 && IslemTarihi != "") {
+            const arr = IslemTarihi.split(".");
+            location.href = "/Hayvanlar/KesimOlum?DurumId=5&HayvanId=" + @Model.HayvanDetay.Id + "&IslemTarihi=" + IslemTarihi;
+            return;
+        }
+
+        if (DurumBilgisiId == 4 && IslemTarihi == "") {
+            ShowErrorMessageBox("Doğum Tarihini Giriniz...");
+            return;
+        }
+        else if (DurumBilgisiId == 4 && IslemTarihi != ""){
+            location.href = "/Hayvanlar/Tohumlama?HayvanId=" + @Model.HayvanDetay.Id + "&IslemTarihi=" + IslemTarihi;
+            return;
+        }
+
+        if (DurumBilgisiId == 1 && IslemTarihi == "") {
+            ShowErrorMessageBox("İşlem Tarihini Giriniz...");
+            return;
+        }
+        else if (DurumBilgisiId == 1 && IslemTarihi != "") {
+            const arr = IslemTarihi.split(".");
+            location.href = "/Hayvanlar/SatisYap?HayvanId=" + @Model.HayvanDetay.Id + "&IslemTarihi=" + IslemTarihi;
+            return;
+        }
+
+        if (DurumBilgisiId == "" || IslemTarihi == "") {
+            ShowErrorMessageBox("Tüm alanları giriniz...");
+            return;
+        }
+
+        if (DurumBilgisiId == 9 && document.getElementById("durumAciklama").value == "") {
+            ShowErrorMessageBox("Hayvan kilosunu giriniz...");
+            return;
+        }
+        else {
+            if (isNaN(document.getElementById("durumAciklama").value)) {
+                ShowErrorMessageBox("Sadece rakam giriniz...");
+                return;
+            }
+            Aciklama = document.getElementById("durumAciklama").value;
+        }
+
+        if (DurumBilgisiId == 7 && ddlSagmalDurumu == "") {
+            ShowErrorMessageBox("Sağmal Durumunu Seçiniz...");
+            return;
+        }
+        else if(DurumBilgisiId == 7 && ddlSagmalDurumu != "") {
+            Aciklama = document.getElementById("ddlSagmalDurumu").value;
+        }
+
+        console.log("ddlSagmalDurumu: " + ddlSagmalDurumu)
+
+        var IslemTarihiDate = new Date(IslemTarihi);
+        const conrolDate = new Date();
+        conrolDate.setDate(conrolDate.getDate() + 1)
+
+        if (IslemTarihiDate > conrolDate) {
+            ShowErrorMessageBox("İşlem tarihi bugünden büyük olamaz...");
+            return;
+        }
+
+        if (DurumBilgisiId == 2 && IslemTarihi == "") {
+            ShowErrorMessageBox("Hastalık Tarihini Giriniz...");
+            return;
+        }
+        else if (DurumBilgisiId == 2 && IslemTarihi != ""){
+            location.href = "/Hayvanlar/HastalikEkle?HayvanId=" + @Model.HayvanDetay.Id + "&IslemTarihi=" + IslemTarihi;
+            return;
+        }
+
+        var data = {
+            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+            'HayvanId': @Model.HayvanDetay.Id,
+            'DurumBilgisiId': DurumBilgisiId,
+            'IslemTarihi': IslemTarihi,
+            'Aciklama': Aciklama
+        };
+
+        console.log("data: " + JSON.stringify(data));
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("HayvanDurumEkleAction", "Hayvanlar")',
+            data: data,
+            success: function (response) {
+
+                $('#loadingModal').modal('hide');
+
+                if (response.IsSuccess) {
+                    ShowInfoFunctionBox(response.Message);
+                    location.reload();
+                }
+                else {
+                    ShowErrorMessageBox(response.Message);
+                }
+            },
+            error: function () {
+
+            },
+            beforeSend: function () {
+                document.getElementById("btnHayvanDurumEkle").disabled = true;
+            },
+            complete: function () {
+                document.getElementById("btnHayvanDurumEkle").disabled = false;
+            }
+        });
+    }
+
+    function DurumUygunlukKontrol() {
+
+        $('#loadingModal').modal('show');
+        var DurumBilgisiId = document.getElementById("DurumBilgileri").value;
+
+        var dataObject = (
+        {
+            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+            'DurumBilgisiId': DurumBilgisiId,
+            'HayvanId': @Model.HayvanDetay.Id
+        });
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("HayvanDurumUygunlukKontrol", "Hayvanlar")',
+            data: dataObject,
+            success: function (response) {
+                console.log("Response: " + JSON.stringify(response))
+                if (response.IsSuccess == true) {
+                    DurumBilgisiEkle();
+                }
+                else {
+                    $('#loadingModal').modal('hide');
+                    ShowInfoFunctionBox(response.Message);
+                }
+            }
+        });
+
+    }
+
+    function DurumBilgisiSil(DurumBilgisiId) {
+
+         bootbox.dialog({
+            message: "Durum hareketi silinecek. Onaylıyor musunuz?",
+            title: "Dikkat",
+            buttons: {
+                success: {
+                    label: "Durum hareketini sil",
+                    className: "green",
+                    callback: function () {
+
+                        var data = {
+                            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+                            'HayvanId': @Model.HayvanDetay.Id,
+                            'DurumBilgisiId': DurumBilgisiId
+                        };
+
+                        //console.log("data: " + JSON.stringify(data));
+
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("HayvanDurumSilAction", "Hayvanlar")',
+                            data: data,
+                            success: function (response) {
+                                if (response.IsSuccess) {
+                                    ShowInfoFunctionBox(response.Message);
+                                    location.reload();
+                                }
+                                else {
+                                    ShowErrorMessageBox(response.Message);
+                                }
+                            }
+                        });
+                    }
+                },
+                error: {
+                    label: "Vazgeç",
+                    className: "red",
+                    callback: function () {
+                        return;
+                    }
+                }
+            }
+        });
+    }
+
+    function ShowHideDurumBilgisiPanel() {
+        $("#pnlDurumBilgisiEkle").toggle();
+    }
+
+    function HayvanSil() {
+        bootbox.dialog({
+            message: "Hayvan silinecek. Bu işlem geri alınamaz. Onaylıyor musunuz?",
+            title: "Uyarı !",
+            buttons: {
+                success: {
+                    label: "Evet",
+                    className: "red",
+                    callback: function () {
+                        var dataObject = (
+                        {
+                            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+                            'HayvanId': @Model.HayvanDetay.Id
+                        });
+
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("HayvanSilAction", "Hayvanlar")',
+                            data: dataObject,
+                            success: function (response) {
+                                console.log("Response: " + JSON.stringify(response))
+                                if (response.IsSuccess == true) {
+                                    bootbox.dialog({
+                                        message: "İşlem başarılı",
+                                        title: "Hayvan Silindi",
+                                        buttons: {
+                                            success: {
+                                                label: "Tamam",
+                                                className: "green",
+                                                callback: function () {
+                                                    location.href = "/Home/Index";
+                                                }
+                                            }
+                                        }
+                                    });
+                                }
+                                else {
+                                    $('#loadingModal').modal('hide');
+                                    ShowInfoFunctionBox(response.Message);
+                                }
+                            }
+                        });
+                    }
+                },
+                danger: {
+                    label: "Vazgeç",
+                    className: "green",
+                    callback: function () {
+                        return;
+                    }
+                }
+            }
+        });
+    }
+</script>
+
+<script>
+    $('#HayvanYonetimi').addClass("active");
+</script>

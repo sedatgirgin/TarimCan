@@ -1,0 +1,281 @@
+﻿@using TarimCan.Models
+
+@{
+    ViewBag.Title = "Hayvanlarım";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/DashboardTheme/LightBox/css/lightbox.css" rel="stylesheet" />
+
+<div class="col-md-12" style="min-height:600px">
+
+    <div class="portlet light bordered" style="min-height:620px">
+        <div class="portlet light" style="padding:0 !important; font-size:13px !important; margin:0px !important">
+            <div class="portlet-title" style="margin-bottom:0px !important">
+                <div class="caption">
+                    <i class="icon-equalizer font-red-sunglo"></i>
+                    <span class="caption-subject font-red-sunglo bold uppercase" style="font-size:15px">TOHUMLANAN HAYVANLAR</span>
+                    <a href="https://www.youtube.com/watch?v=Zm51mv885aI&t=83s" target="_blank"> <img src="~/DashboardTheme/assets/global/ana-icons/youtube-full-logo.png" style="height:20px" title="Yardım Videosu"></a>
+                </div>
+
+                <div class="actions">
+                    <a href="/Hayvanlar/HayvanEkle?DurumId=0&HayvanId=0" class="btn btn-circle btn-default">
+                        <i class="fa fa-plus"></i>
+                        <span class="hidden-480">
+                            Hayvan Ekle
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="portlet-body">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 margin-bottom-10">
+                            <div class="dashboard-stat2">
+                                <div class="display">
+                                    <div class="number">
+                                        <h3 class="font-green-sharp">@ViewBag.InekOrani </h3>
+                                        <small>TOHUMLANAN İNEKLERİN GEBE KALMA ORANI</small>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="icon-pie-chart"></i>
+                                    </div>
+                                </div>
+                                <div class="progress-info">
+                                    <div class="progress">
+                                        <span style="width: 100%;" class="progress-bar progress-bar-success green-sharp">
+                                            <span class="sr-only"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                            <div class="dashboard-stat2">
+                                <div class="display">
+                                    <div class="number">
+                                        <h3 class="font-red-sunglo">@ViewBag.DuveOrani </h3>
+                                        <small>TOHUMLANAN DÜVELERİN GEBE KALMA ORANI</small>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="icon-pie-chart"></i>
+                                    </div>
+                                </div>
+                                <div class="progress-info">
+                                    <div class="progress">
+                                        <span style="width: 100%;" class="progress-bar progress-bar-success red-haze">
+                                            <span class="sr-only"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        @{
+                            if (ViewBag.Hayvanlar != null)
+                            {
+
+                                List<HayvanModel> hayvanlar = ViewBag.Hayvanlar;
+
+                                if (hayvanlar.Count > 0)
+                                {
+
+                                    <table class="table table-hover table-light">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align:center">Detay</th>
+                                                <th style="text-align:center">No</th>
+                                                <th style="text-align:center">Küpe No</th>
+                                                <th style="text-align:center">Adı / Takip Numarası</th>
+                                                <th style="text-align:center">Sürü Grubu</th>
+                                                <th style="text-align:center">Yaşı</th>
+                                                <th style="text-align:center">Tohumlanma Tarihi</th>
+                                                <th style="text-align:center">Tohumlandığı Gün Sayısı</th>
+                                                <th style="text-align:center">SGS Süresi</th>
+                                                <th style="text-align:center">Son Tohum Sayısı</th>
+                                                <th style="text-align:center">Tohum Başarı Oranı</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tblHayvanResult">
+                                            @{
+                                                int sayacSos = 1;
+
+                                                foreach (var item in hayvanlar)
+                                                {
+                                                    <tr>
+                                                        <td style="text-align:center; cursor:pointer">
+                                                            <a class="label label-sm label-info" href="/Hayvanlar/HayvanDetay/@item.Id"> Detay </a>
+                                                        </td>
+                                                        <td style="text-align:center">@Convert.ToInt32(sayacSos++).ToString()</td>
+                                                        <td>
+                                                            @item.KupeNo
+                                                        </td>
+                                                        <td>
+                                                            @item.Adi
+                                                        </td>
+                                                        <td style="text-align:center">
+                                                            @item.SuruGrubu
+                                                        </td>
+                                                        <td align="center">
+                                                            @{
+                                                                TimeSpan ts = DateTime.Now - item.DogumTarihi;
+
+                                                                int gunSayisi = ts.Days;
+                                                                decimal dcYilSayisi = gunSayisi / 365;
+                                                                int intYilSayisi = Convert.ToInt32(Math.Floor(dcYilSayisi));
+
+                                                                int yilGunu = intYilSayisi * 365;
+                                                                int kalan = gunSayisi - yilGunu;
+
+                                                                decimal dcAySayisi = kalan / 30;
+                                                                int intAySayisi = Convert.ToInt32(Math.Floor(dcAySayisi));
+
+                                                                string YilStr = Convert.ToInt32(Math.Floor(dcYilSayisi)).ToString() + " Yaş ";
+                                                                string AyStr = Convert.ToInt32(Math.Floor(dcAySayisi)).ToString() + " Ay";
+
+                                                                <span>
+                                                                    @if (intYilSayisi != 0)
+                                                                    {
+                                                                        @YilStr
+                                                                    }
+
+                                                                    @if (intAySayisi != 0)
+                                                                    {
+                                                                        @AyStr
+                                                                    }
+                                                                </span>
+                                                            }
+                                                        </td>
+                                                        <td align="center">
+                                                            @if (item.IslemTarihi.ToString("dd.MM.yyyy") != "01.01.0001")
+                                                            {
+                                                                @item.IslemTarihi.ToString("dd.MM.yyyy")
+                                                            }
+                                                        </td>
+                                                        <td align="center">
+                                                            @if (item.IslemTarihi.ToString("dd.MM.yyyy") != "01.01.0001")
+                                                            {
+
+                                                                TimeSpan tsTohumGunFark = DateTime.Now - item.IslemTarihi;
+                                                                <span>@tsTohumGunFark.Days</span>
+                                                            }
+                                                        </td>
+                                                        <td align="center">
+                                                            @if (@item.SGS != 0)
+                                                            {
+                                                                <span>
+                                                                    @item.SGS
+                                                                </span>
+                                                            }
+                                                        </td>
+                                                        <td align="center">
+                                                            @if (@item.TohumlanmaSayisi != 0)
+                                                            {
+                                                                <span>
+                                                                    @item.TohumlanmaSayisi
+                                                                </span>
+                                                            }
+                                                        </td>
+                                                        <td align="center">
+                                                            @if (@item.TohumTutmaOrani != 0)
+                                                            {
+                                                                double yuzdesi = (100 / @item.TohumTutmaOrani);
+                                                                <span>
+                                                                    % @yuzdesi.ToString("0.00")
+                                                                </span>
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                }
+                                else
+                                {
+                                    <span>Listelenecek hayvan bulunamadı...</span>
+                                }
+                            }
+                            else
+                            {
+                                <span>Listelenecek hayvan bulunamadı...</span>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    @Html.AntiForgeryToken()
+</div>
+
+<script src="@Url.Content("~/DashboardTheme/assets/global/plugins/jquery.min.js")" type="text/javascript"></script>
+
+<script src="~/DashboardTheme/LightBox/js/lightbox.js"></script>
+
+<script>
+
+    function GoToHayvanGuncelle() {
+        location.href = "/Hayvanlar/HayvanEkle?DurumId=0&HayvanId=" + document.getElementById("hdnHayvanId").value;
+    }
+
+    function validate(evt) {
+        var theEvent = evt || window.event;
+
+        // Handle paste
+        if (theEvent.type === 'paste') {
+            key = event.clipboardData.getData('text/plain');
+        } else {
+            // Handle key press
+            var key = theEvent.keyCode || theEvent.which;
+            key = String.fromCharCode(key);
+        }
+        var regex = /[0-9]|\./;
+        if (!regex.test(key)) {
+            theEvent.returnValue = false;
+            if (theEvent.preventDefault) theEvent.preventDefault();
+        }
+    }
+
+    function HayvanFiltrele() {
+        var strKupeNo = $("#flKupeNo").val();
+        var strAdi = $("#flAdi").val();
+        var strAciklama = $("#flAciklama").val();
+
+        var data = {
+            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+            'KupeNo': strKupeNo,
+            'Adi': strAdi,
+            'Aciklama': strAciklama,
+            'SuruGrubuId': document.getElementById("SuruGruplari").value,
+            'CinsiyetId': document.getElementById("flCinsiyet").value
+        };
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("HayvanAraAction", "Hayvanlar")',
+            data: data,
+            success: function (response) {
+                document.getElementById("tblHayvanResult").innerHTML = "";
+                var sayac = 0;
+                for (var k in response) {
+                    sayac = sayac + 1;
+                    $('#tblHayvanResult').append('<tr><td><span class="label label-sm label-info" onclick="HayvanDetayGetir(' + response[k].Id + ')"> Detay </span> </td><td>' + sayac + '</td> <td>' + response[k].KupeNo + '</td> <td>' + response[k].Adi + '</td> <td>' + response[k].SuruGrubu + '</td> <td>' + response[k].Cinsiyet + '</td> ');
+                    //$('#tblHayvanResult').append('<tr><td>' + sayac + '</td> <td>' + response[k].KupeNo + '</td> <td>' + response[k].Adi + '</td> <td>' + response[k].SuruyeGirisTarihiFormatted + '</td> <td>' + response[k].SuruGrubu + '</td> <td>' + response[k].Cinsiyet + '</td>  <td>' + response[k].DogumTarihiFormatted + '</td> <td><span class="label label-sm label-info" onclick="HayvanDetayGetir(' + response[k].Id + ')"> Detay </span> </td>');
+                }
+            }
+        });
+    }
+
+</script>
+
+<script>
+    $('#HayvanYonetimi').addClass("active");
+</script>

@@ -1,0 +1,165 @@
+﻿@using TarimCan.Models
+@using TarimCan.Helper
+
+@{
+    ViewBag.Title = "Hayvan Ekle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-12">
+    <div class="portlet light bordered" style="min-height:705px">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-equalizer font-green-sharp"></i>
+                <span class="caption-subject font-green-sharp bold uppercase">TOHUMLAMA BİLGİSİ KAYDET</span> -
+                <a href="https://www.youtube.com/watch?v=Zm51mv885aI&t=83s" target="_blank"> <img src="~/DashboardTheme/assets/global/ana-icons/youtube-full-logo.png" style="height:20px" title="Yardım Videosu"></a>
+            </div>
+            <div class="actions">
+                <a href="/TopluIslemler/Kesim" class="btn btn-circle btn-default">
+                    <i class="fa fa-plus"></i>
+                    <span class="hidden-480">
+                        Toplu Tohumlama
+                    </span>
+                </a>
+            </div>
+        </div>
+        <div class="portlet-body form">
+            <!-- BEGIN FORM-->
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-md-3 control-label">İşlem Tarihi</label>
+                    <div class="col-md-4">
+                        <input type="date" class="form-control" placeholder="dd-mm-yyyy" id="IslemTarihi" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Baba Küpe No</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" placeholder="baba küpe no" id="BabaKupeNo">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label">İşlem Ücreti</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" placeholder="işlem ücreti" id="TohumlamaFiyati" maxlength="5" onkeypress="return isNumeric(event)" oninput="maxLengthCheck(this)" onchange="IslemUcretiChanged()">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Açıklama</label>
+                    <div class="col-md-4">
+                        <textarea class="form-control" id="Aciklama" rows="4" cols="50"> </textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label">&nbsp;</label>
+                    <div class="col-md-4">
+                        <button id="btnKaydet" type="submit" class="btn green" onclick="Kaydet()" style="width:100%">Tohumlama Bilgisi Kaydet</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.AntiForgeryToken()
+</div>
+
+<script src="@Url.Content("~/DashboardTheme/assets/global/plugins/jquery.min.js")" type="text/javascript"></script>
+
+<script>
+
+    $(function () {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const IslemTarihi = urlParams.get('IslemTarihi')
+        document.getElementById("IslemTarihi").value = IslemTarihi;
+    })
+
+    function IslemUcretiChanged() {
+        document.getElementById("TohumlamaFiyati").value = formatMoney(document.getElementById("TohumlamaFiyati").value) + ' TL';
+    }
+
+    function Kaydet() {
+
+        var Aciklama = "";
+        var data = {
+            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+            'HayvanId': @ViewBag.HayvanId,
+            'DurumBilgisiId': 4,
+            'IslemTarihi': document.getElementById("IslemTarihi").value,
+            'IslemUcreti': document.getElementById("TohumlamaFiyati").value.replace('.', '').replace(' TL', ''),
+            'BabaKupeNo': document.getElementById("BabaKupeNo").value,
+            'Aciklama': document.getElementById("Aciklama").value
+        };
+
+        console.log("data", JSON.stringify(data));
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("TohumlamaKaydetAction", "Hayvanlar")',
+            data: data,
+            success: function (response) {
+                if (response.IsSuccess) {
+                    bootbox.dialog({
+                        message: "İşlem başarılı",
+                        title: "İşlem Tamamlandı. Kayıt Başarılı.",
+                        buttons: {
+                            success: {
+                                label: "Tamam",
+                                className: "green",
+                                callback: function () {
+                                    location.href = "/Hayvanlar/HayvanDetay/@ViewBag.HayvanId";
+                                }
+                            }
+                        }
+                    });
+                }
+                else {
+                    if (response.MessageCode != -1) {
+                        ShowInfoFunctionBox(response.Message);
+                    }
+                    else {
+                        console.log(response.Message);
+                    }
+                }
+            }
+        });
+    }
+
+</script>
+
+<script>
+
+    function maxLengthCheck(object) {
+        if (object.value.length > object.maxLength)
+            object.value = object.value.slice(0, object.maxLength)
+    }
+
+    function isNumeric(evt) {
+        var theEvent = evt || window.event;
+        var key = theEvent.keyCode || theEvent.which;
+        key = String.fromCharCode(key);
+        var regex = /[0-9]|\./;
+        if (!regex.test(key)) {
+            theEvent.returnValue = false;
+            if (theEvent.preventDefault) theEvent.preventDefault();
+        }
+    }
+
+    function formatMoney(price) {
+        var currency_symbol = "₺"
+        var formattedOutput = new Intl.NumberFormat('tr-TR', {
+            style: 'currency',
+            currency: 'TRY',
+            minimumFractionDigits: 0,
+        });
+        return formattedOutput.format(price).replace(currency_symbol, '')
+    }
+
+</script>
+
+<script>
+    $('#HayvanEkle').addClass("active");
+</script>

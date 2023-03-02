@@ -1,0 +1,220 @@
+﻿@using TarimCan.Models
+
+@model List<HayvanModel>
+
+@{
+    ViewBag.Title = "Toplu Tohumlama";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-12">
+
+    <div class="portlet light bordered" style="min-height:620px">
+        <div class="row">
+            <div class="col-md-12" style="min-height:600px">
+                <div class="portlet light" style="padding:0 !important; font-size:13px !important; margin:0px !important">
+                    <div class="portlet-title" style="margin-bottom:0px !important">
+                        <div class="caption">
+                            <i class="icon-equalizer font-red-sunglo"></i>
+                            <span class="caption-subject font-red-sunglo bold uppercase" style="font-size:15px">TOPLU HAYVAN KESİM</span>
+                            <a href="https://www.youtube.com/watch?v=Zm51mv885aI&t=83s" target="_blank"> <img src="~/DashboardTheme/assets/global/ana-icons/youtube-full-logo.png" style="height:20px" title="Yardım Videosu"></a>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="portlet-body">
+
+                    <div class="form-horizontal" style="margin-bottom:40px">
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">İşlem Tarihi</label>
+                            <div class="col-md-3">
+                                <input type="date" class="form-control" data-format="00-00-0000" placeholder="dd-mm-yyyy" id="IslemTarihi" autocomplete="off">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">&nbsp;</label>
+                            <div class="col-md-3">
+                                <button id="btnSosYardOde" type="submit" class="btn green" onclick="TopluKesimeGonder()" style="width:100%">Toplu Kesime Gönder</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    @{
+                        if (Model.Count > 0)
+                        {
+                            <table class="table table-hover table-light">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align:center">&nbsp; </th>
+                                        <th style="text-align:center">No</th>
+                                        <th>Küpe No</th>
+                                        <th>Adı</th>
+                                        <th>Sürü Grubu</th>
+                                        <th>Cinsiyeti</th>
+                                        <th>Sürüye Giriş Tarihi</th>
+                                        <th>Doğum Tarihi</th>
+                                        <th>Karkas Ağırlığı</th>
+                                        <th>Kesim Fiyatı</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tblHayvanResult">
+                                    @{
+                                        int sayacSos = 1;
+
+                                        foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td style="text-align:center"><input type="checkbox" id="@item.Id" name="chk" /></td>
+                                                <td style="text-align:center">@Convert.ToInt32(sayacSos++).ToString()</td>
+                                                <td>
+                                                    @item.KupeNo
+                                                </td>
+                                                <td>
+                                                    @item.Adi
+                                                </td> 
+                                                <td>
+                                                    @item.SuruGrubu
+                                                </td>
+                                                <td>
+                                                    @item.Cinsiyet
+                                                </td>
+                                                <td>
+                                                    @item.SuruyeGirisTarihi.ToString("dd.MM.yyyy")
+                                                </td>
+                                                <td>
+                                                    @item.DogumTarihi.ToString("dd.MM.yyyy")
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" placeholder="karkas" id="txtKarkas_@item.Id" maxlength="5" onkeypress="return isNumeric(event)" oninput="maxLengthCheck(this)">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" placeholder="fiyat" id="txtFiyat_@item.Id" maxlength="5" onkeypress="return isNumeric(event)" oninput="maxLengthCheck(this)">
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <span>Listelenecek hayvan bulunamadı...</span>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.AntiForgeryToken()
+</div>
+
+<script src="@Url.Content("~/DashboardTheme/assets/global/plugins/jquery.min.js")" type="text/javascript"></script>
+
+<script>
+
+    function TopluTohumla() {
+
+        var IslemTarihi = document.getElementById("IslemTarihi").value;
+
+        if (IslemTarihi == "") {
+            ShowErrorMessageBox("İşlem tarihi giriniz..."); return;
+        }
+
+        var Ids = [];
+
+        var checkedBoxes = document.querySelectorAll('input[name=chk]:checked');
+        for (const input of checkedBoxes) {
+            Ids.push(input.id);
+        }
+
+        var dataObject = JSON.stringify(
+        {
+            'Ids': JSON.stringify(Ids)
+        });
+
+
+        if (Ids.length == 0) {
+            ShowErrorMessageBox("Tohumlanacak hayvan seçiniz..."); return;
+        }
+
+        console.log(dataObject);
+
+        bootbox.dialog({
+            message: Ids.length + " adet seçili hayvan toplu tohumlanacak. Onaylıyor musunuz?",
+            title: "Uyarı",
+            buttons: {
+                success: {
+                    label: "Onaylıyorum",
+                    className: "green",
+                    callback: function () {
+
+                        var data = {
+                            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+                            'IslemTarihi': IslemTarihi,
+                            'Ids': JSON.stringify(Ids)
+                        };
+
+                        console.log("data", JSON.stringify(data));
+
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("TopluHayvanTohumlaAction", "TopluIslemler")',
+                            data: data,
+                            success: function (response) {
+                                if (response.IsSuccess) {
+                                    ShowInfoFunctionBox(response.Message);
+                                    document.getElementById("tblHayvanResult").innerHTML = "";
+                                }
+                                else {
+                                    if (response.MessageCode != -1) {
+                                        ShowInfoFunctionBox(response.Message);
+                                    }
+                                    else {
+                                        console.log(response.Message);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                },
+                error: {
+                    label: "İptal Et",
+                    className: "red",
+                    callback: function () {
+                        return;
+                    }
+                }
+            }
+        });
+
+    }
+</script>
+
+<script>
+
+    function maxLengthCheck(object) {
+        if (object.value.length > object.maxLength)
+            object.value = object.value.slice(0, object.maxLength)
+    }
+
+    function isNumeric(evt) {
+        var theEvent = evt || window.event;
+        var key = theEvent.keyCode || theEvent.which;
+        key = String.fromCharCode(key);
+        var regex = /[0-9]|\./;
+        if (!regex.test(key)) {
+            theEvent.returnValue = false;
+            if (theEvent.preventDefault) theEvent.preventDefault();
+        }
+    }
+
+</script>
+
+<script>
+    $('#topluIslemler').addClass("open");
+    $('#topluIslemlerArrow').addClass("open");
+    $('#topluIslemlerSubMenu').css("display", "block");
+    $('#subMenuTopluKesim').addClass("active");
+</script>

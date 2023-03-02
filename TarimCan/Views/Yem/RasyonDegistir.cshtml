@@ -1,0 +1,207 @@
+﻿@using TarimCan.Models
+
+@{
+    ViewBag.Title = "Rasyon Oluştur";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-12">
+
+    <div class="portlet light bordered" style="min-height:770px">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-equalizer font-green-sharp"></i>
+                <span class="caption-subject font-green-sharp bold uppercase">RASYON DEĞİŞTİR</span> -
+                <a href="https://www.youtube.com/watch?v=Zm51mv885aI&t=83s" target="_blank"> <img src="~/DashboardTheme/assets/global/ana-icons/youtube-full-logo.png" style="height:20px" title="Yardım Videosu"></a>
+            </div>
+        </div>
+
+        <div class="portlet-body form">
+            <!-- BEGIN FORM-->
+            <div class="form-horizontal">
+                <div class="col-md-7">
+
+                    <table class="table table-hover table-light">
+                        <tbody>
+                            <tr role="row" class="heading">
+                                <th width="5%" tabindex="0" rowspan="1" colspan="1">
+                                    Sıra
+                                </th>
+                                <th width="15%" tabindex="0" rowspan="1" colspan="1">
+                                    Rasyon Adı
+                                </th>
+                                <th width="20%" tabindex="0" rowspan="1" colspan="1">
+                                    Padok Sayısı
+                                </th>
+                                <th width="20%" tabindex="0" rowspan="1" colspan="1">
+                                    Oluşturulma Tarihi
+                                </th>
+                                <th width="20%" tabindex="0" rowspan="1" colspan="1" style="text-align:center">
+                                    &nbsp;
+                                </th>
+                                <th width="20%" tabindex="0" rowspan="1" colspan="1" style="text-align:center">
+                                    &nbsp;
+                                </th>
+                            </tr>
+                        </tbody>
+                        <tbody id="tblResult">
+                            @{
+                                List<RasyonModel> stok = ViewBag.Rasyonlar;
+
+                                if (stok.Count > 0)
+                                {
+                                    int Sayac = 1;
+                                    foreach (var item in stok)
+                                    {
+                                        <tr>
+                                            <td>@Convert.ToInt32(Sayac++).ToString()</td>
+                                            <td>
+                                                @item.RasyonAdi
+                                            </td>
+                                            <td>
+                                                @item.PadokSayisi
+                                            </td>
+                                            <td>
+                                                @item.KayitTarihi.ToString("dd.MM.yyyy")
+                                            </td>
+                                            <td align="center">
+                                                <a href="/Yem/RasyonOlustur/@item.Id" class="btn default btn-xs green-stripe"> Güncelle </a>
+                                            </td>
+                                            <td style="text-align:center; cursor:pointer"> <a href="javascript:;" class="btn default btn-xs red-stripe" onclick="RasyonSil(@item.Id)">&nbsp;&nbsp; Rasyonu Sil&nbsp;&nbsp;</a> </td>
+                                        </tr>
+                                    }
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    @Html.AntiForgeryToken()
+</div>
+
+<script src="@Url.Content("~/DashboardTheme/assets/global/plugins/jquery.min.js")" type="text/javascript"></script>
+
+<script>
+
+    var RasyonAdi;
+
+    function RasyonSil(RasyonId) {
+
+        bootbox.dialog({
+            title: "Uyarı",
+            message: "Rasyon silinecek. Onaylıyor musunuz?.",
+            buttons: {
+                success: {
+                    label: "Rasyonu Sil",
+                    className: "red",
+                    callback: function () {
+
+                        var dataObject = (
+                        {
+                            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+                            'RasyonId': RasyonId,
+                        });
+
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("RasyonSilAction", "Yem")',
+                            data: dataObject,
+                            success: function (response) {
+                                if (response.IsSuccess) {
+                                    ShowInfoFunctionBox(response.Message);
+                                    location.reload();
+                                }
+                                else {
+                                    if (response.MessageCode != -1) {
+                                        ShowInfoFunctionBox(response.Message);
+                                    }
+                                    else {
+                                        console.log(response.Message);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+
+    }
+
+    function RasyonGuncelle() {
+
+        RasyonAdi = document.getElementById("RasyonAdi").value;
+        let YemIdleri = [];
+        const YemMiktarlari = [];
+
+        if (RasyonAdi == "") {
+            ShowInfoFunctionBox("Rasyon adınız giriniz...");
+            return;
+        }
+
+        var inputs = document.getElementById('tblResult').getElementsByTagName('input');
+
+        for (var i = 0; i < inputs.length; i++) {
+            if (inputs[i].value != "") {
+                console.log("YemId: " + inputs[i].id + " - InputVal: " + inputs[i].value);
+                YemIdleri.push(inputs[i].id.replace("hayvanBasiYem_", ""));
+                YemMiktarlari.push(inputs[i].value);
+            }
+        }
+
+        var dataObject = (
+        {
+            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+            'RasyonAdi': RasyonAdi,
+            'YemIdleri': JSON.stringify(YemIdleri),
+            'YemMiktarlari': JSON.stringify(YemMiktarlari)
+        });
+
+        console.log("dataObject: " + JSON.stringify(dataObject));
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("RasyonKaydetAction", "Yem")',
+            data: dataObject,
+            success: function (response) {
+                if (response.IsSuccess) {
+                    bootbox.dialog({
+                        title: "İşlem başarılı",
+                        message: "İşlem Tamamlandı. Kayıt Başarılı.",
+                        buttons: {
+                            success: {
+                                label: "Tamam",
+                                className: "green",
+                                callback: function () {
+                                    location.href = "/Home/Index/";
+                                }
+                            }
+                        }
+                    });
+                }
+                else {
+                    if (response.MessageCode != -1) {
+                        ShowInfoFunctionBox(response.Message);
+                    }
+                    else {
+                        console.log(response.Message);
+                    }
+                }
+            }
+        });
+
+    }
+
+</script>
+
+<script>
+    $('#YemYonetimi').addClass("open");
+    $('#YemYonetimiArrow').addClass("open");
+    $('#yemYonetimiSubMenu').css("display", "block");
+    $('#subMenuRasyonDegistir').addClass("active");
+</script>

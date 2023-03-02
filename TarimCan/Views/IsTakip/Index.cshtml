@@ -1,0 +1,175 @@
+﻿@using TarimCan.Models
+
+@model List<IsTakipModel>
+
+@{
+    ViewBag.Title = "İş Listesi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/DashboardTheme/LightBox/css/lightbox.css" rel="stylesheet" />
+
+<div class="col-md-12" style="min-height:600px">
+
+    <div class="portlet light bordered" style="min-height:620px">
+        <div class="portlet light" style="padding:0 !important; font-size:13px !important; margin:0px !important">
+            <div class="portlet-title" style="margin-bottom:0px !important">
+                <div class="caption">
+                    <i class="icon-equalizer font-red-sunglo"></i>
+                    <span class="caption-subject font-red-sunglo bold uppercase" style="font-size:15px">İŞ LİSTESİ</span>
+                </div>
+
+                <div class="actions">
+                    <a href="/IsTakip/IsEkle" class="btn btn-circle btn-default">
+                        <i class="fa fa-plus"></i>
+                        <span class="hidden-480">
+                            İş Ekle
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="portlet-body">
+            @{
+                <table class="table table-hover table-light">
+                    <thead>
+                        <tr>
+                            <th width="5%" style="text-align:center">#</th>
+                            <th width="10%">Durumu</th>
+                            <th width="10%">Başlık</th>
+                            <th width="22%">Açıklama</th>
+                            <th width="22%">Yorum</th>
+                            <th width="8%">Öncelik Sırası</th>
+                            <th width="8%">Oluşturan Kullanıcı</th>
+                            <th width="7%" style="text-align:center">Ekli Dosya</th>
+                            <th width="7%" style="text-align:center">&nbsp;</th>
+                        </tr>
+                        <tr role="row" class="filter">
+                            <td rowspan="1" colspan="1">
+                            </td>
+                            <td rowspan="1" colspan="1">
+                                <select id="fiCat" class="form-control" onchange="GoToKategori(this.value)">
+                                    <option value="">Seçiniz</option>
+                                    <option value="1">Yeni Talep</option>
+                                    <option value="2">Kabul Edildi</option>
+                                    <option value="3">İşleme Alındı</option>
+                                    <option value="4">İptal Edildi</option>
+                                    <option value="5">Tamamlandı</option>
+                                    <option value="6">Beklemede</option>
+                                    <option value="7">Ek Bilgi Bekleniyor</option>
+                                    <option value="8">Kapatıldı</option>
+                                </select>
+                            </td>
+                            <td rowspan="1" colspan="1">
+                            </td>
+                            <td rowspan="1" colspan="1">
+                            </td>
+                            <td rowspan="1" colspan="1">
+                            </td>
+                            <td rowspan="1" colspan="1" style="text-align:center">
+                            </td>
+                            <td rowspan="1" colspan="1" style="text-align:center">
+                            </td>
+                            <td rowspan="1" colspan="1" style="text-align:center">
+                            </td>
+
+                        </tr>
+                    </thead>
+                    <tbody id="tblHayvanResult">
+                        @{
+                            int sayacSos = 1;
+
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td style="text-align:center">@Convert.ToInt32(sayacSos++).ToString()</td>
+                                    <td>
+                                        @item.Kategori
+                                    </td>
+                                    <td>
+                                        @item.Baslik
+                                    </td>
+                                    <td>
+                                        @item.Aciklama
+                                    </td>
+                                    <td>
+                                        <span id="see_@item.IsTakipId" style="display:block">@item.TamamlanmaYorumu</span>
+                                        <textarea class="form-control" id="edit_@item.IsTakipId" cols="5" style="display:none">@item.TamamlanmaYorumu</textarea>
+                                    </td>
+                                    <td>
+                                        @item.OncelikSirasi
+                                    </td>
+                                    <td>
+                                        @item.IsimSoyisim
+                                    </td>
+                                    <td style="text-align:center">
+                                        @if (item.EkliDosyaAdi != null)
+                                        {
+                                            <a href="/YuklenenDosyalar/IsTakip/@item.EkliDosyaAdi" class="btn default btn-xs green-stripe"> Ekli Dosya Gör </a>
+                                        }
+                                    </td>
+                                    <td>
+                                        @*<span id="btnYorumGuncelle_@item.IsTakipId" class="btn default btn-xs green-stripe" onclick="YorumGuncelle(@item.IsTakipId)"> Güncelle </span>*@
+                                        <a href="/IsTakip/IsDetay/@item.IsTakipId" class="btn default btn-xs green-stripe"> Güncelle </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+    @Html.AntiForgeryToken()
+</div>
+
+<script src="@Url.Content("~/DashboardTheme/assets/global/plugins/jquery.min.js")" type="text/javascript"></script>
+
+<script src="~/DashboardTheme/LightBox/js/lightbox.js"></script>
+
+<script>
+
+    function GoToKategori(val) {
+        console.log(val);
+        location.href = "/IsTakip/Index/" + val;
+    }
+
+    function YorumGuncelle(val) {
+
+        console.log(val);
+        console.log("Display: " + document.getElementById("see_" + val).style.display);
+
+        var YorumText = document.getElementById("edit_" + val).value;
+
+        if (document.getElementById("see_" + val).style.display == 'block') {
+            document.getElementById("edit_" + val).style.display = 'block';
+            document.getElementById("see_" + val).style.display = 'none'
+            document.getElementById("btnYorumGuncelle_" + val).innerHTML = 'Kaydet';
+        }
+        else {
+
+            var dataObject = ({
+                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+                'TamamlanmaYorumu': document.getElementById("edit_" + val).value,
+                'IsTakipId': val
+            });
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("IsYorumGuncelle", "IsTakip")',
+                data: dataObject,
+                success: function (response) {
+                    //console.log(response);
+                    if (response.IsSuccess) {
+                        location.reload();
+                    }
+                }
+            });
+        }
+    }
+
+</script>
+
+<script>
+    $('#IsTakip').addClass("active");
+</script>

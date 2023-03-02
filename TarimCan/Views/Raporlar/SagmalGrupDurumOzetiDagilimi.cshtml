@@ -1,0 +1,95 @@
+﻿@using TarimCan.Models
+@using TarimCan.Helper
+
+@{
+    ViewBag.Title = "Sağmal Grup Dağılımı";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-12">
+    <div class="portlet light bordered minHeight">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-equalizer font-green-sharp"></i>
+                <span class="caption-subject font-green-sharp bold uppercase">SAĞMAL GRUBUN GEBELİK DURUMU</span> -
+                <a href="https://www.youtube.com/watch?v=Zm51mv885aI&t=83s" target="_blank"> <img src="~/DashboardTheme/assets/global/ana-icons/youtube-full-logo.png" style="height:20px" title="Yardım Videosu"></a>
+            </div>
+        </div>
+
+        <div class="portlet-body form">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="portlet light">
+                        <div class="portlet-body">
+                            <!--BEGIN TABS-->
+                            <div class="tab-content">
+
+                                @if (ViewBag.RaporVerisi != null)
+                                {
+                                    <div id="chartContainer" style="height: 600px; width: 100%;"></div>
+                                }
+                                else
+                                {
+                                    <span>Raporlanacak veri bulunamadı...</span>
+                                }
+
+                            </div>
+                            <!--END TABS-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @Html.AntiForgeryToken()
+</div>
+
+<script src="@Url.Content("~/DashboardTheme/assets/global/plugins/jquery.min.js")" type="text/javascript"></script>
+
+
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+<script>
+
+    window.onload = function () {
+
+        var chart = new CanvasJS.Chart("chartContainer", {
+            exportEnabled: false,
+            animationEnabled: true,
+            legend: {
+                cursor: "pointer",
+                itemclick: explodePie
+            },
+            data: [{
+                type: "pie",
+                showInLegend: true,
+                toolTipContent: "{name}: <strong>{y}%</strong>",
+                indexLabel: "{name} - {y}%",
+                dataPoints: [
+                    @Html.Raw(ViewBag.RaporVerisi)
+                ]
+            }]
+        });
+        chart.render();
+
+    }
+
+    function explodePie(e) {
+        if (typeof (e.dataSeries.dataPoints[e.dataPointIndex].exploded) === "undefined" || !e.dataSeries.dataPoints[e.dataPointIndex].exploded) {
+            e.dataSeries.dataPoints[e.dataPointIndex].exploded = true;
+        } else {
+            e.dataSeries.dataPoints[e.dataPointIndex].exploded = false;
+        }
+        e.chart.render();
+
+    }
+
+</script>
+
+<script>
+    $('#Raporlar').addClass("open");
+    $('#RaporlarArrow').addClass("open");
+    $('#RaporlarSubMenu').css("display", "block");
+    $('#subMenuSagmalGrupDurumOzeti').addClass("active");
+</script>

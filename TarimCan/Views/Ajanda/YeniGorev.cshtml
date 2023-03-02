@@ -1,0 +1,168 @@
+﻿@using TarimCan.Models
+
+@model HayvanModel
+
+@{
+    ViewBag.Title = "Yeni Görev";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-12">
+    <div class="portlet light bordered" style="min-height:705px">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-equalizer font-green-sharp"></i>
+                <span class="caption-subject font-green-sharp bold uppercase">YENİ GÖREV</span> -
+                <a href="https://www.youtube.com/watch?v=Zm51mv885aI&t=83s" target="_blank"> <img src="~/DashboardTheme/assets/global/ana-icons/youtube-full-logo.png" style="height:20px" title="Yardım Videosu"></a>
+            </div>
+        </div>
+        <div class="portlet-body form">
+            <!-- BEGIN FORM-->
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Hayvan Seçiniz</label>
+                    <div class="col-md-4">
+                        @Html.DropDownList("Hayvanlar", new SelectList(ViewBag.Hayvanlar, "Value", "Text"), "Seçiniz", new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Yapılacak İşlem</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" placeholder="yapılacak işlem" id="Gorev" maxlength="50" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Başlangıç Tarihi</label>
+                    <div class="col-md-4">
+                        <input type="date" class="form-control" data-format="00-00-0000" placeholder="dd-mm-yyyy" id="BaslangicTarihi" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Bitiş Tarihi</label>
+                    <div class="col-md-4">
+                        <input type="date" class="form-control" data-format="00-00-0000" placeholder="dd-mm-yyyy" id="BitisTarihi" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label">&nbsp;</label>
+                    <div class="col-md-4">
+                        <button id="btnSosYardOde" type="submit" class="btn green" onclick="GorevKaydet()" style="width:100%">Kaydet</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.AntiForgeryToken()
+</div>
+
+<script src="@Url.Content("~/DashboardTheme/assets/global/plugins/jquery.min.js")" type="text/javascript"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/imask/6.4.2/imask.min.js" integrity="sha512-l0grYOI8XZga5TajPOiqLrQVCKrdh+k0QSEtS+cpJlNeI8Nu9GOhsVaFyFQuPQfYp02GnhsyHqkPR7P7BTKYAQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-dateFormat/1.0/jquery.dateFormat.min.js" integrity="sha512-YKERjYviLQ2Pog20KZaG/TXt9OO0Xm5HE1m/OkAEBaKMcIbTH1AwHB4//r58kaUDh5b1BWwOZlnIeo0vOl1SEA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+
+    function GorevKaydet() {
+        var HayvanId = document.getElementById("Hayvanlar").value;
+        var Gorev = document.getElementById("Gorev").value;
+        var BaslangicTarihi = document.getElementById("BaslangicTarihi").value;
+        var BitisTarihi = document.getElementById("BitisTarihi").value;
+
+        if (Gorev == "") {
+            ShowInfoFunctionBox("Yapılacak işlemi giriniz...");
+            return;
+        }
+
+        if (BaslangicTarihi == "") {
+            ShowInfoFunctionBox("Başlangıç tarihini giriniz...");
+            return;
+        }
+
+        if (BitisTarihi == "") {
+            ShowInfoFunctionBox("Bitiş tarihini giriniz...");
+            return;
+        }
+
+
+        var BitisTarihiDate = new Date(BitisTarihi);
+        var BaslangicTarihiDate = new Date(BaslangicTarihi);
+
+        if (BitisTarihiDate < BaslangicTarihiDate) {
+            ShowErrorMessageBox("Başlangıç tarihi bitiş tarihinden büyük olamaz...");
+            return;
+        }
+
+        var dataObject = (
+        {
+            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+            'HayvanId': HayvanId,
+            'Gorev': Gorev,
+            'BaslangicTarihi': BaslangicTarihi,
+            'BitisTarihi': BitisTarihi
+        });
+
+        $.ajax({
+            type: "POST",
+            url: '/Ajanda/GorevEkleAction',
+            data: dataObject,
+            success: function (response) {
+                //console.log("Response: " + JSON.stringify(response))
+                if (response.IsSuccess) {
+                    bootbox.dialog({
+                        message: "İşlem başarılı",
+                        title: "İşlem Tamamlandı. Kayıt Başarılı.",
+                        buttons: {
+                            success: {
+                                label: "Tamam",
+                                className: "green",
+                                callback: function () {
+                                    location.href = "/Home/Index/";
+                                }
+                            }
+                        }
+                    });
+                }
+                else {
+                    if (response.MessageCode != -1) {
+                        ShowInfoFunctionBox(response.Message);
+                    }
+                    else {
+                        console.log(response.Message);
+                    }
+                }
+            }
+        });
+
+    }
+
+    var PhotoIndex = 0;
+    $(function () {
+
+
+    })
+
+    function maxLengthCheck(object) {
+        if (object.value.length > object.maxLength)
+            object.value = object.value.slice(0, object.maxLength)
+    }
+
+    function isNumeric(evt) {
+        var theEvent = evt || window.event;
+        var key = theEvent.keyCode || theEvent.which;
+        key = String.fromCharCode(key);
+        var regex = /[0-9]|\./;
+        if (!regex.test(key)) {
+            theEvent.returnValue = false;
+            if (theEvent.preventDefault) theEvent.preventDefault();
+        }
+    }
+
+</script>
+
+<script>
+    $('#HayvanEkle').addClass("active");
+</script>

@@ -1,0 +1,276 @@
+﻿@using TarimCan.Models
+@using TarimCan.Helper
+
+@model List<HayvanModel>
+
+@{
+    ViewBag.Title = "Toplu Sürü Grubu Güncelle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <img class="col-md-2" src="~/DashboardTheme/assets/global/plugins/slider-layer-slider/skins/fullwidth/loading.gif" style="width:56px; height:25px" />
+                            <div class="col-md-9">
+                                <h4 class="modal-title">Padoklar Güncelleniyor, lütfen bekleyiniz ve bu ekranı kapatmayınız...</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="portlet light bordered minHeight">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-equalizer font-green-sharp"></i>
+                <span class="caption-subject font-green-sharp bold uppercase">TOPLU PADOK GÜNCELLE</span> -
+                <a href="https://www.youtube.com/watch?v=Zm51mv885aI&t=83s" target="_blank"> <img src="~/DashboardTheme/assets/global/ana-icons/youtube-full-logo.png" style="height:20px" title="Yardım Videosu"></a>
+            </div>
+
+        </div>
+        <div class="portlet-body form">
+            <!-- BEGIN FORM-->
+            <div class="form-horizontal">
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Padok</label>
+                    <div class="col-md-4">
+                        @Html.DropDownList("Padok", new SelectList(ViewBag.Padok, "Value", "Text"), "Seçiniz", new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label">&nbsp;</label>
+                    <div class="col-md-4">
+                        <button id="btnSosYardOde" type="submit" class="btn green" onclick="Guncelle()" style="width:100%">Padok Güncelle</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="portlet-body">
+            <table class="table table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th width="5%" style="text-align:center"> # </th>
+                        <th width="5%"> Sıra No </th>
+                        <th width="15%"> Küpe No </th>
+                        <th width="15%"> Adı / Özel Takip Numarası </th>
+                        <th width="15%"> Sürü Grubu </th>
+                        <th width="15%"> Hayvan Tipi </th>
+                        <th width="15%"> Padok Adı </th>
+                        <th width="10%"> Cinsiyeti </th>
+                    </tr>
+                    <tr role="row" class="filter">
+                        <td rowspan="1" colspan="1">
+                            &nbsp;
+                        </td>
+                        <td rowspan="1" colspan="1">
+                            <input type="text" class="form-control form-filter input-sm" placeholder="sıra no" disabled>
+                        </td>
+                        <td rowspan="1" colspan="1">
+                            <input type="text" class="form-control form-filter input-sm" placeholder="küpe no" disabled>
+                        </td>
+                        <td rowspan="1" colspan="1">
+                            <input type="text" class="form-control form-filter input-sm" placeholder="adı / takip numarası" disabled>
+                        </td>
+                        <td rowspan="1" colspan="1">
+                            <select id="flSlSuruGrudu" class="form-control form-filter input-sm" onchange="HayvanFiltrele()">
+                                <option value="0">Seçiniz...</option>
+                                <option value="1">Buzağı</option>
+                                <option value="2">Dana</option>
+                                <option value="3">Tosun</option>
+                                <option value="4">Düve</option>
+                                <option value="5">İnek</option>
+                                <option value="6">Boğa</option>
+                            </select>
+                        </td>
+                        <td rowspan="1" colspan="1">
+                            <select id="flSlDurumKodu" class="form-control form-filter input-sm" onchange="HayvanFiltrele()">
+                                <option value="0">Seçiniz...</option>
+                                <option value="3">Gebe</option>
+                                <option value="4">Tohumlandı</option>
+                                <option value="8">Kuruya Ayrıldı</option>
+                                <option value="18">Boşa Ayrıldı</option>
+                                <option value="20">Sağmala Ayrıldı</option>
+                                <option value="22">Boş / Kuruya Ayrıldı</option>
+                            </select>
+                        </td>
+                        <td rowspan="1" colspan="1">
+                            @Html.DropDownList("Padok", new SelectList(ViewBag.Padok, "Value", "Text"), "Seçiniz", new { @class = "form-control", @onchange = "HayvanFiltrele()" })
+                        </td>
+                        <td rowspan="1" colspan="1">
+                            <select id="flSlCinsiyet" class="form-control form-filter input-sm" onchange="HayvanFiltrele()">
+                                <option value="0">Seçiniz...</option>
+                                <option value="1">Dişi</option>
+                                <option value="2">Erkek</option>
+                            </select>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody id="tblResult">
+                    @{
+                        int siraNo = 1;
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td align="center">
+                                    <input type="checkbox" id="chk_@item.Id" value="@item.Id" />
+                                </td>
+                                <td align="center"> @Convert.ToInt32(siraNo++).ToString() </td>
+                                <td> @item.KupeNo </td>
+                                <td> @item.Adi </td>
+                                <td> @item.SuruGrubu </td>
+                                <td> @item.DurumBilgisi </td>
+                                <td> @item.PadokAdi </td>
+                                <td> @item.Cinsiyet </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    @Html.AntiForgeryToken()
+</div>
+
+<script src="@Url.Content("~/DashboardTheme/assets/global/plugins/jquery.min.js")" type="text/javascript"></script>
+
+<script>
+
+    $(function () {
+    })
+
+    function HayvanFiltrele() {
+
+        var data = {
+            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+            'SuruGrubuId': document.getElementById("flSlSuruGrudu").value,
+            'DurumBilgisiId': document.getElementById("flSlDurumKodu").value,
+            'PadokId': document.getElementById("Padok").value,
+            'CinsiyetId': document.getElementById("flSlCinsiyet").value
+        };
+
+        console.log("data", JSON.stringify(data));
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("HayvanFiltrele", "TopluIslemler")',
+            data: data,
+            success: function (response) {
+
+                document.getElementById("tblResult").innerHTML = "";
+                var sayac = 0;
+                for (var k in response) {
+                    sayac = sayac + 1;
+
+                    $('#tblResult').append('<tr><td align="center"><input type="checkbox" id="' + response[k].Id + '" name="chk" value="' + response[k].Id + '" /></td> <td align="center">' + sayac + '</td> ' +
+                        '<td>' + response[k].KupeNo + ' </td><td> ' + response[k].Adi + ' </td><td>' + response[k].SuruGrubu + '</td><td>' + response[k].DurumBilgisi + '</td><td>' + response[k].PadokAdi + '</td><td>' + response[k].Cinsiyet + '</td></tr>');
+                }
+            }
+        });
+    }
+
+    function Guncelle() {
+
+
+        const HayvanIds = [];
+
+        var container = document.querySelector('#tblResult');
+        var seciliHayvanlar = container.querySelectorAll('input[type="checkbox"]:checked');
+
+        for (var i = 0; i < seciliHayvanlar.length; i++) {
+            console.log(seciliHayvanlar[i].value);
+
+            if (HayvanIds.includes(seciliHayvanlar[i].value) == false) {
+                HayvanIds.push(seciliHayvanlar[i].value);
+            }
+        }
+
+        console.log("Idler: " + JSON.stringify(HayvanIds));
+
+        if (document.getElementById("Padok").value == "") {
+            ShowInfoFunctionBox("Lütfen padok seçiniz...");
+            return;
+        }
+
+        if (HayvanIds.length == 0) {
+            ShowInfoFunctionBox("Lütfen hayvan seçiniz...");
+            return;
+        }
+
+        var data = {
+            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+            'Ids': JSON.stringify(HayvanIds),
+            'PadokId': document.getElementById("Padok").value
+        };
+
+        console.log("data", JSON.stringify(data));
+
+        $('#basic').modal('show');
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("TopluHayvanPadokGuncelle", "TopluIslemler")',
+            data: data,
+            success: function (response) {
+                if (response.IsSuccess) {
+
+                    $('#basic').modal('hide');
+
+                    bootbox.dialog({
+                        message: "İşlem başarılı, Padoklar güncellendi",
+                        title: "İşlem Tamamlandı.",
+                        buttons: {
+                            success: {
+                                label: "Tamam",
+                                className: "green",
+                                callback: function () {
+                                    location.reload();
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+</script>
+
+<script>
+
+    function maxLengthCheck(object) {
+        if (object.value.length > object.maxLength)
+            object.value = object.value.slice(0, object.maxLength)
+    }
+
+    function isNumeric(evt) {
+        var theEvent = evt || window.event;
+        var key = theEvent.keyCode || theEvent.which;
+        key = String.fromCharCode(key);
+        var regex = /[0-9]|\./;
+        if (!regex.test(key)) {
+            theEvent.returnValue = false;
+            if (theEvent.preventDefault) theEvent.preventDefault();
+        }
+    }
+
+</script>
+
+<script>
+    $('#topluIslemler').addClass("open");
+    $('#topluIslemlerArrow').addClass("open");
+    $('#topluIslemlerSubMenu').css("display", "block");
+    $('#subMenuHayvanTopluPadok').addClass("active");
+</script>

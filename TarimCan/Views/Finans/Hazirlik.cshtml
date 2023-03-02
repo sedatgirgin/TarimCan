@@ -1,0 +1,36 @@
+﻿@using TarimCan.Models
+@using TarimCan.Helper
+
+@model SutModel
+
+@{
+    ViewBag.Title = "Günlük Süt Yönetimi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="col-md-12">
+    <!-- BEGIN ALERTS PORTLET-->
+    <div class="portlet light bordered" style="min-height:705px">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="fa fa-cogs font-red-sunglo"></i>
+                <span class="caption-subject font-red-sunglo bold uppercase">FİNANS MÜDÜLÜ HAZIRLANIYOR</span>
+                <span class="caption-helper">tasarım aşamasında...</span>
+            </div>
+        </div>
+        <div class="portlet-body">
+            <div class="note note-danger">
+                <h4 class="block bold">DİKKAT</h4>
+                <p>
+                    Finans modülü hazırlanıyor. Hazırlanınca Whatapp gruplarımızdan bilgilendirme yapılacaktır...
+                </p>
+            </div>
+
+        </div>
+    </div>
+    <!-- END ALERTS PORTLET-->
+</div>
+
+
+<script>
+    $('#FinansalYonetim').addClass("active");
+</script>

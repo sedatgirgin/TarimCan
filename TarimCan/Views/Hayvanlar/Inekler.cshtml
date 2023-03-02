@@ -1,0 +1,231 @@
+﻿@using TarimCan.Models
+@model List<HayvanModel>
+
+@{
+    ViewBag.Title = "Hayvanlarım";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/DashboardTheme/LightBox/css/lightbox.css" rel="stylesheet" />
+
+<div class="col-md-12" style="min-height:600px">
+
+    <div class="portlet light bordered" style="min-height:620px">
+        <div class="portlet light" style="padding:0 !important; font-size:13px !important; margin:0px !important">
+            <div class="portlet-title" style="margin-bottom:0px !important">
+                <div class="caption">
+                    <i class="icon-equalizer font-red-sunglo"></i>
+                    <span class="caption-subject font-red-sunglo bold uppercase" style="font-size:15px">İNEKLER</span> -
+                    <a href="https://www.youtube.com/watch?v=Zm51mv885aI&t=83s" target="_blank"> <img src="~/DashboardTheme/assets/global/ana-icons/youtube-full-logo.png" style="height:20px" title="Yardım Videosu"></a>
+                </div>
+
+                <div class="actions">
+                    <a href="/Hayvanlar/HayvanEkle?DurumId=0&HayvanId=0" class="btn btn-circle btn-default">
+                        <i class="fa fa-plus"></i>
+                        <span class="hidden-480">
+                            Hayvan Ekle
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="portlet-body">
+            @{
+                if (Model.Count != 0)
+                {
+                    <table id="example" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th style="text-align:center">Detay</th>
+                                <th style="text-align:center">No</th>
+                                <th style="text-align:center">Küpe No</th>
+                                <th style="text-align:center">Adı / Takip Numarası</th>
+                                <th style="text-align:center">Durumu</th>
+                                <th style="text-align:center">Grubu</th>
+                                <th style="text-align:center">Yaşı</th>
+                                <th style="text-align:center">SGS</th>
+                                <th style="text-align:center">Servis Periyodu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int sayacSos = 1;
+
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td style="text-align:center; cursor:pointer">
+                                            <a class="label label-sm label-info" href="/Hayvanlar/HayvanDetay/@item.Id"> Detay </a>
+                                        </td>
+                                        <td style="text-align:center">@Convert.ToInt32(sayacSos++).ToString()</td>
+                                        <td>
+                                            @item.KupeNo
+                                        </td>
+                                        <td>
+                                            @item.Adi
+                                        </td>
+                                        <td style="text-align:center">
+                                            @item.KuruSagmalBosKuru
+                                        </td>
+                                        <td style="text-align:center">
+                                            @item.BosTohumGebe
+                                        </td>
+                                        <td style="text-align:center">
+                                            @{
+                                                TimeSpan ts = DateTime.Now - item.DogumTarihi;
+
+                                                int gunSayisi = ts.Days;
+                                                decimal dcYilSayisi = gunSayisi / 365;
+                                                int intYilSayisi = Convert.ToInt32(Math.Floor(dcYilSayisi));
+
+                                                int yilGunu = intYilSayisi * 365;
+                                                int kalan = gunSayisi - yilGunu;
+
+                                                decimal dcAySayisi = kalan / 30;
+                                                int intAySayisi = Convert.ToInt32(Math.Floor(dcAySayisi));
+
+                                                string YilStr = Convert.ToInt32(Math.Floor(dcYilSayisi)).ToString() + " Yaş ";
+                                                string AyStr = Convert.ToInt32(Math.Floor(dcAySayisi)).ToString() + " Ay";
+
+                                                <span>
+                                                    @if (intYilSayisi != 0)
+                                                    {
+                                                        @YilStr
+                                                    }
+
+                                                    @if (intAySayisi != 0)
+                                                    {
+                                                        @AyStr
+                                                    }
+                                                </span>
+                                            }
+                                        </td>
+                                        <td style="text-align:center">
+                                            @item.SGS
+                                        </td>
+                                        <td style="text-align:center">
+                                            @item.ServisPeriyodu
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th style="text-align:center">Detay</th>
+                                <th style="text-align:center">No</th>
+                                <th style="text-align:center">Küpe No</th>
+                                <th style="text-align:center">Adı / Takip Numarası</th>
+                                <th style="text-align:center">Durumu</th>
+                                <th style="text-align:center">Grubu</th>
+                                <th style="text-align:center">Yaşı</th>
+                                <th style="text-align:center">SGS</th>
+                                <th style="text-align:center">Servis Periyodu</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                }
+                else
+                {
+                    <span>Listelenecek hayvan bulunamadı...</span>
+                }
+            }
+        </div>
+    </div>
+    @Html.AntiForgeryToken()
+</div>
+
+<script src="~/DashboardTheme/LightBox/js/lightbox.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+       $('#example tfoot th').each(function () {
+            var title = $(this).text();
+            $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+        });
+
+        var table = $('#example').DataTable({
+            language: {
+                url: "GetDatatables_i18n"
+            },
+            select: true,
+            processing: true,
+            filter: true,
+            orderMulti: true,
+            scrollX: true,
+            colReorder: true,
+
+            initComplete: function () {
+                // Apply the search
+                this.api()
+                    .columns()
+                    .every(function () {
+                        var that = this;
+
+                        $('input', this.footer()).on('keyup change clear', function () {
+                            if (that.search() !== this.value) {
+                                that.search(this.value).draw();
+                            }
+                        });
+                    });
+            },
+        });
+    });
+
+    function GoToHayvanGuncelle() {
+        location.href = "/Hayvanlar/HayvanEkle?DurumId=0&HayvanId=" + document.getElementById("hdnHayvanId").value;
+    }
+
+    function validate(evt) {
+        var theEvent = evt || window.event;
+
+        // Handle paste
+        if (theEvent.type === 'paste') {
+            key = event.clipboardData.getData('text/plain');
+        } else {
+            // Handle key press
+            var key = theEvent.keyCode || theEvent.which;
+            key = String.fromCharCode(key);
+        }
+        var regex = /[0-9]|\./;
+        if (!regex.test(key)) {
+            theEvent.returnValue = false;
+            if (theEvent.preventDefault) theEvent.preventDefault();
+        }
+    }
+
+    function HayvanFiltrele() {
+        var strKupeNo = $("#flKupeNo").val();
+        var strAdi = $("#flAdi").val();
+        var strAciklama = $("#flAciklama").val();
+
+        var data = {
+            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+            'KupeNo': strKupeNo,
+            'Adi': strAdi,
+            'Aciklama': strAciklama,
+        };
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("HayvanAraAction", "Hayvanlar")',
+            data: data,
+            success: function (response) {
+                document.getElementById("tblHayvanResult").innerHTML = "";
+                var sayac = 0;
+                for (var k in response) {
+                    sayac = sayac + 1;
+                    $('#tblHayvanResult').append('<tr><td> <a class="label label-sm label-info" href="/Hayvanlar/HayvanDetay/' + response[k].Id +'"> Detay </a> </td><td>' + sayac + '</td> <td>' + response[k].KupeNo + '</td> <td>' + response[k].Adi + '</td> <td>' + response[k].SuruGrubu + '</td> <td>' + response[k].Cinsiyet + '</td> ');
+                    //$('#tblHayvanResult').append('<tr><td>' + sayac + '</td> <td>' + response[k].KupeNo + '</td> <td>' + response[k].Adi + '</td> <td>' + response[k].SuruyeGirisTarihiFormatted + '</td> <td>' + response[k].SuruGrubu + '</td> <td>' + response[k].Cinsiyet + '</td>  <td>' + response[k].DogumTarihiFormatted + '</td> <td><span class="label label-sm label-info" onclick="HayvanDetayGetir(' + response[k].Id + ')"> Detay </span> </td>');
+                }
+            }
+        });
+    }
+
+</script>
+
+<script>
+    $('#HayvanYonetimi').addClass("active");
+</script>
