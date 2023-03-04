@@ -13,7 +13,7 @@ namespace TarimCan.DataAccessLayer
 
         public MSSqlDataAccess()
         {
-            if(sqlConn.State != ConnectionState.Open)
+            if(sqlConn == null || sqlConn.State != ConnectionState.Open)
             {
                 sqlConn = new SqlConnection(ConfigurationManager.AppSettings["DBConnectionString"]);
 
