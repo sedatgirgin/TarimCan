@@ -10,3 +10,9 @@ D:\TarimCanSourceCode\TarimCan.Models\obj\Debug\TarimCan.Models.csproj.AssemblyR
 D:\TarimCanSourceCode\TarimCan.Models\obj\Debug\TarimCan.Models.csproj.CoreCompileInputs.cache
 D:\TarimCanSourceCode\TarimCan.Models\obj\Debug\TarimCan.Models.dll
 D:\TarimCanSourceCode\TarimCan.Models\obj\Debug\TarimCan.Models.pdb
+D:\Project\TarimCan\TarimCan.Models\bin\Debug\TarimCan.Models.dll
+D:\Project\TarimCan\TarimCan.Models\bin\Debug\TarimCan.Models.pdb
+D:\Project\TarimCan\TarimCan.Models\obj\Debug\TarimCan.Models.csproj.AssemblyReference.cache
+D:\Project\TarimCan\TarimCan.Models\obj\Debug\TarimCan.Models.csproj.CoreCompileInputs.cache
+D:\Project\TarimCan\TarimCan.Models\obj\Debug\TarimCan.Models.dll
+D:\Project\TarimCan\TarimCan.Models\obj\Debug\TarimCan.Models.pdb

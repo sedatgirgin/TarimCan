@@ -13,11 +13,14 @@ namespace TarimCan.DataAccessLayer
 
         public MSSqlDataAccess()
         {
-            sqlConn = new SqlConnection(ConfigurationManager.AppSettings["DBConnectionString"]);
+            if(sqlConn.State != ConnectionState.Open)
+            {
+                sqlConn = new SqlConnection(ConfigurationManager.AppSettings["DBConnectionString"]);
 
-            SqlConnection.ClearPool(sqlConn);
-            SqlConnection.ClearAllPools();
-            sqlConn.Open();
+                SqlConnection.ClearPool(sqlConn);
+                SqlConnection.ClearAllPools();
+                sqlConn.Open();
+            }
         }
 
         public DataTable GetDataTable(string sql)
@@ -101,7 +104,7 @@ namespace TarimCan.DataAccessLayer
         public List<T> ExecuteObject<T>(string spName, List<SqlParameter> sqlParams)
         {
             SqlCommand command = new SqlCommand(spName, sqlConn);
-            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.CommandType = CommandType.StoredProcedure;
 
             foreach (var item in sqlParams)
             {

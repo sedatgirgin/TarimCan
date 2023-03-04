@@ -1,12 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32002.261
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32819.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tarimcan.Admin", "..\Tarimcan.Admin\Tarimcan.Admin.csproj", "{DE645D29-9B95-47F2-A45D-7B6A88ADA283}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBDuzenlemeHelper", "..\DBDuzenlemeHelper\DBDuzenlemeHelper.csproj", "{D3B89A75-D8F0-40F4-B9FE-D6252A201F31}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tarimcan.Schedule", "..\Tarimcan.Schedule\Tarimcan.Schedule.csproj", "{E49A6169-7191-40B8-BAEA-953FDFA96FCD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TarimCan.DataAccessLayer", "..\TarimCan.DataAccessLayer\TarimCan.DataAccessLayer.csproj", "{64E8BE46-91F1-42E6-B830-675DD40F7D75}"
@@ -23,14 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DE645D29-9B95-47F2-A45D-7B6A88ADA283}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DE645D29-9B95-47F2-A45D-7B6A88ADA283}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DE645D29-9B95-47F2-A45D-7B6A88ADA283}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DE645D29-9B95-47F2-A45D-7B6A88ADA283}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D3B89A75-D8F0-40F4-B9FE-D6252A201F31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D3B89A75-D8F0-40F4-B9FE-D6252A201F31}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D3B89A75-D8F0-40F4-B9FE-D6252A201F31}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D3B89A75-D8F0-40F4-B9FE-D6252A201F31}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E49A6169-7191-40B8-BAEA-953FDFA96FCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E49A6169-7191-40B8-BAEA-953FDFA96FCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E49A6169-7191-40B8-BAEA-953FDFA96FCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
