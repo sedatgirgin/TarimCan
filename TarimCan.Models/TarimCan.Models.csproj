@@ -45,6 +45,7 @@
     <Compile Include="AkademiModel.cs" />
     <Compile Include="AnahtarKelimeModel.cs" />
     <Compile Include="AnaSayfaIsletmeDurumModel.cs" />
+    <Compile Include="Asi.cs" />
     <Compile Include="DBCheckModel.cs" />
     <Compile Include="DemirbasModel.cs" />
     <Compile Include="DurumBilgisiModel.cs" />

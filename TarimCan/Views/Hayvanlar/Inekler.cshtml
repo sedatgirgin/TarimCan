@@ -1,5 +1,4 @@
 ﻿@using TarimCan.Models
-@model List<HayvanModel>
 
 @{
     ViewBag.Title = "Hayvanlarım";
@@ -15,7 +14,7 @@
             <div class="portlet-title" style="margin-bottom:0px !important">
                 <div class="caption">
                     <i class="icon-equalizer font-red-sunglo"></i>
-                    <span class="caption-subject font-red-sunglo bold uppercase" style="font-size:15px">İNEKLER</span> -
+                    <span class="caption-subject font-red-sunglo bold uppercase" style="font-size:15px">İNEKLER</span> - 
                     <a href="https://www.youtube.com/watch?v=Zm51mv885aI&t=83s" target="_blank"> <img src="~/DashboardTheme/assets/global/ana-icons/youtube-full-logo.png" style="height:20px" title="Yardım Videosu"></a>
                 </div>
 
@@ -31,100 +30,126 @@
         </div>
         <div class="portlet-body">
             @{
-                if (Model.Count != 0)
+                if (ViewBag.Hayvanlar != null)
                 {
-                    <table id="example" class="display" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th style="text-align:center">Detay</th>
-                                <th style="text-align:center">No</th>
-                                <th style="text-align:center">Küpe No</th>
-                                <th style="text-align:center">Adı / Takip Numarası</th>
-                                <th style="text-align:center">Durumu</th>
-                                <th style="text-align:center">Grubu</th>
-                                <th style="text-align:center">Yaşı</th>
-                                <th style="text-align:center">SGS</th>
-                                <th style="text-align:center">Servis Periyodu</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @{
-                                int sayacSos = 1;
 
-                                foreach (var item in Model)
-                                {
-                                    <tr>
-                                        <td style="text-align:center; cursor:pointer">
-                                            <a class="label label-sm label-info" href="/Hayvanlar/HayvanDetay/@item.Id"> Detay </a>
-                                        </td>
-                                        <td style="text-align:center">@Convert.ToInt32(sayacSos++).ToString()</td>
-                                        <td>
-                                            @item.KupeNo
-                                        </td>
-                                        <td>
-                                            @item.Adi
-                                        </td>
-                                        <td style="text-align:center">
-                                            @item.KuruSagmalBosKuru
-                                        </td>
-                                        <td style="text-align:center">
-                                            @item.BosTohumGebe
-                                        </td>
-                                        <td style="text-align:center">
-                                            @{
-                                                TimeSpan ts = DateTime.Now - item.DogumTarihi;
+                    List<HayvanModel> hayvanlar = ViewBag.Hayvanlar;
 
-                                                int gunSayisi = ts.Days;
-                                                decimal dcYilSayisi = gunSayisi / 365;
-                                                int intYilSayisi = Convert.ToInt32(Math.Floor(dcYilSayisi));
+                    if (hayvanlar.Count > 0)
+                    {
 
-                                                int yilGunu = intYilSayisi * 365;
-                                                int kalan = gunSayisi - yilGunu;
+                        <table class="table table-hover table-light">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center">Detay</th>
+                                    <th style="text-align:center">No</th>
+                                    <th style="text-align:center">Küpe No</th>
+                                    <th style="text-align:center">Adı / Takip Numarası</th>
+                                    <th style="text-align:center">Durumu</th>
+                                    <th style="text-align:center">Grubu</th>
+                                    <th style="text-align:center">Yaşı</th>
+                                    <th style="text-align:center">SGS</th>
+                                    <th style="text-align:center">Servis Periyodu</th>
+                                </tr>
+                                <tr role="row" class="filter">
+                                    <td rowspan="1" colspan="1" style="text-align:center; cursor:pointer">
+                                        <button class="btn btn-sm yellow filter-submit margin-bottom" onclick="HayvanFiltrele()"><i class="fa fa-search"></i>&nbsp; Ara</button>
+                                    </td>
+                                    <td rowspan="1" colspan="1">
+                                        &nbsp;
+                                    </td>
+                                    <td rowspan="1" colspan="1">
+                                        <input type="text" class="form-control form-filter input-sm" id="flKupeNo" placeholder="küpe no">
+                                    </td>
+                                    <td rowspan="1" colspan="1">
+                                        <input type="text" class="form-control form-filter input-sm" id="flAdi" placeholder="adı">
+                                    </td>
+                                    <td rowspan="1" colspan="1">
+                                        <input type="text" class="form-control form-filter input-sm" disabled>
+                                    </td>
+                                    <td rowspan="1" colspan="1">
+                                        <input type="text" class="form-control form-filter input-sm" disabled>
+                                    </td>
+                                    <td rowspan="1" colspan="1">
+                                        <input type="text" class="form-control form-filter input-sm" disabled>
+                                    </td>
+                                    <td rowspan="1" colspan="1">
+                                        <input type="text" class="form-control form-filter input-sm" disabled>
+                                    </td>
+                                    <td rowspan="1" colspan="1">
+                                        <input type="text" class="form-control form-filter input-sm" disabled>
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody id="tblHayvanResult">
+                                @{
+                                    int sayacSos = 1;
 
-                                                decimal dcAySayisi = kalan / 30;
-                                                int intAySayisi = Convert.ToInt32(Math.Floor(dcAySayisi));
+                                    foreach (var item in hayvanlar)
+                                    {
+                                        <tr>
+                                            <td style="text-align:center; cursor:pointer">
+                                                <a class="label label-sm label-info" href="/Hayvanlar/HayvanDetay/@item.Id"> Detay </a>
+                                            </td>
+                                            <td style="text-align:center">@Convert.ToInt32(sayacSos++).ToString()</td>
+                                            <td>
+                                                @item.KupeNo
+                                            </td>
+                                            <td>
+                                                @item.Adi
+                                            </td>
+                                            <td style="text-align:center">
+                                                @item.KuruSagmalBosKuru
+                                            </td>
+                                            <td style="text-align:center">
+                                                @item.BosTohumGebe
+                                            </td>
+                                            <td style="text-align:center">
+                                                @{
+                                                    TimeSpan ts = DateTime.Now - item.DogumTarihi;
 
-                                                string YilStr = Convert.ToInt32(Math.Floor(dcYilSayisi)).ToString() + " Yaş ";
-                                                string AyStr = Convert.ToInt32(Math.Floor(dcAySayisi)).ToString() + " Ay";
+                                                    int gunSayisi = ts.Days;
+                                                    decimal dcYilSayisi = gunSayisi / 365;
+                                                    int intYilSayisi = Convert.ToInt32(Math.Floor(dcYilSayisi));
 
-                                                <span>
-                                                    @if (intYilSayisi != 0)
-                                                    {
-                                                        @YilStr
-                                                    }
+                                                    int yilGunu = intYilSayisi * 365;
+                                                    int kalan = gunSayisi - yilGunu;
 
-                                                    @if (intAySayisi != 0)
-                                                    {
-                                                        @AyStr
-                                                    }
-                                                </span>
-                                            }
-                                        </td>
-                                        <td style="text-align:center">
-                                            @item.SGS
-                                        </td>
-                                        <td style="text-align:center">
-                                            @item.ServisPeriyodu
-                                        </td>
-                                    </tr>
+                                                    decimal dcAySayisi = kalan / 30;
+                                                    int intAySayisi = Convert.ToInt32(Math.Floor(dcAySayisi));
+
+                                                    string YilStr = Convert.ToInt32(Math.Floor(dcYilSayisi)).ToString() + " Yaş ";
+                                                    string AyStr = Convert.ToInt32(Math.Floor(dcAySayisi)).ToString() + " Ay";
+
+                                                    <span>
+                                                        @if (intYilSayisi != 0)
+                                                        {
+                                                            @YilStr
+                                                        }
+
+                                                        @if (intAySayisi != 0)
+                                                        {
+                                                            @AyStr
+                                                        }
+                                                    </span>
+                                                }
+                                            </td>
+                                            <td style="text-align:center">
+                                                @item.SGS
+                                            </td>
+                                            <td style="text-align:center">
+                                                @item.ServisPeriyodu
+                                            </td>
+                                        </tr>
+                                    }
                                 }
-                            }
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th style="text-align:center">Detay</th>
-                                <th style="text-align:center">No</th>
-                                <th style="text-align:center">Küpe No</th>
-                                <th style="text-align:center">Adı / Takip Numarası</th>
-                                <th style="text-align:center">Durumu</th>
-                                <th style="text-align:center">Grubu</th>
-                                <th style="text-align:center">Yaşı</th>
-                                <th style="text-align:center">SGS</th>
-                                <th style="text-align:center">Servis Periyodu</th>
-                            </tr>
-                        </tfoot>
-                    </table>
-
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <span>Listelenecek hayvan bulunamadı...</span>
+                    }
                 }
                 else
                 {
@@ -136,43 +161,11 @@
     @Html.AntiForgeryToken()
 </div>
 
+<script src="@Url.Content("~/DashboardTheme/assets/global/plugins/jquery.min.js")" type="text/javascript"></script>
+
 <script src="~/DashboardTheme/LightBox/js/lightbox.js"></script>
 
 <script>
-
-    $(document).ready(function () {
-       $('#example tfoot th').each(function () {
-            var title = $(this).text();
-            $(this).html('<input type="text" placeholder="Search ' + title + '" />');
-        });
-
-        var table = $('#example').DataTable({
-            language: {
-                url: "GetDatatables_i18n"
-            },
-            select: true,
-            processing: true,
-            filter: true,
-            orderMulti: true,
-            scrollX: true,
-            colReorder: true,
-
-            initComplete: function () {
-                // Apply the search
-                this.api()
-                    .columns()
-                    .every(function () {
-                        var that = this;
-
-                        $('input', this.footer()).on('keyup change clear', function () {
-                            if (that.search() !== this.value) {
-                                that.search(this.value).draw();
-                            }
-                        });
-                    });
-            },
-        });
-    });
 
     function GoToHayvanGuncelle() {
         location.href = "/Hayvanlar/HayvanEkle?DurumId=0&HayvanId=" + document.getElementById("hdnHayvanId").value;
@@ -206,6 +199,8 @@
             'KupeNo': strKupeNo,
             'Adi': strAdi,
             'Aciklama': strAciklama,
+            'SuruGrubuId': document.getElementById("SuruGruplari").value,
+            'CinsiyetId': document.getElementById("flCinsiyet").value
         };
 
         $.ajax({

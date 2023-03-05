@@ -20,6 +20,7 @@ namespace TarimCan.Controllers
         public IsTakipManager itm = new IsTakipManager();
         public MakinaEkipmanManager mem = new MakinaEkipmanManager();
         public RaporManager rprMan = new RaporManager();
+        public AsiManager asiMan = new AsiManager();
 
         public UIHelper helper = new UIHelper();
 

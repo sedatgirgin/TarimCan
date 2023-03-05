@@ -16,3 +16,9 @@ D:\Project\TarimCan\TarimCan.Models\obj\Debug\TarimCan.Models.csproj.AssemblyRef
 D:\Project\TarimCan\TarimCan.Models\obj\Debug\TarimCan.Models.csproj.CoreCompileInputs.cache
 D:\Project\TarimCan\TarimCan.Models\obj\Debug\TarimCan.Models.dll
 D:\Project\TarimCan\TarimCan.Models\obj\Debug\TarimCan.Models.pdb
+D:\TarimCan\TarimCan.Models\bin\Debug\TarimCan.Models.dll
+D:\TarimCan\TarimCan.Models\bin\Debug\TarimCan.Models.pdb
+D:\TarimCan\TarimCan.Models\obj\Debug\TarimCan.Models.csproj.AssemblyReference.cache
+D:\TarimCan\TarimCan.Models\obj\Debug\TarimCan.Models.csproj.CoreCompileInputs.cache
+D:\TarimCan\TarimCan.Models\obj\Debug\TarimCan.Models.dll
+D:\TarimCan\TarimCan.Models\obj\Debug\TarimCan.Models.pdb

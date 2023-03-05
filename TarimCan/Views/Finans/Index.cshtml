@@ -3,7 +3,7 @@
 @model List<FinansModel>
 
 @{
-    ViewBag.Title = "Hayvanlarım";
+    ViewBag.Title = "Asi Listesi";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -24,60 +24,6 @@
 
                     </div>
                 </div>
-                <div class="portlet-body">
-                    @{
-                        if (Model.Count > 0)
-                        {
-                            <table class="table table-hover table-light">
-                                <thead>
-                                    <tr>
-                                        <th style="text-align:center">No</th>
-                                        <th>GelirTipi</th>
-                                        <th>Küpe No</th>
-                                        <th>Miktari</th>
-                                        <th style="text-align:center">BirimFiyati</th>
-                                        <th style="text-align:center">ToplamTutar</th>
-                                        <th style="text-align:center">İşlem Tarihi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tblHayvanResult">
-                                    @{
-                                        int sayacSos = 1;
-
-                                        foreach (var item in Model)
-                                        {
-                                            <tr>
-                                                <td style="text-align:center">@Convert.ToInt32(sayacSos++).ToString()</td>
-                                                <td>
-                                                    @item.GelirTipi
-                                                </td>
-                                                <td>
-                                                    @item.KupeNo
-                                                </td>
-                                                <td>
-                                                    @item.Miktari
-                                                </td>
-                                                <td align="right">
-                                                    @String.Format("{0:0,0.0}", item.BirimFiyati) TL
-                                                </td>
-                                                <td align="right">
-                                                    @String.Format("{0:0,0.0}", item.ToplamTutar) TL
-                                                </td>
-                                                <td style="text-align:center">
-                                                    @item.IslemTarihi.ToString("dd.MM.yyyy")
-                                                </td>
-                                            </tr>
-                                        }
-                                    }
-                                </tbody>
-                            </table>
-                        }
-                        else
-                        {
-                            <span>Listelenecek hayvan bulunamadı...</span>
-                        }
-                    }
-                </div>
             </div>
         </div>
     </div>
@@ -85,5 +31,5 @@
 </div>
 
 <script>
-    $('#FinansalYonetim').addClass("active");
+    $('#AsiYonetimi').addClass("active");
 </script>

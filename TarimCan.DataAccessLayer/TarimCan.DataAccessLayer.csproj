@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="AjandaManager.cs" />
     <Compile Include="AkademiManager.cs" />
+    <Compile Include="AsiManager.cs" />
     <Compile Include="CommonManager.cs" />
     <Compile Include="FinansManager.cs" />
     <Compile Include="HayvanlarManager.cs" />

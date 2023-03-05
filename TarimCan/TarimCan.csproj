@@ -122,6 +122,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AjandaController.cs" />
     <Compile Include="Controllers\AkademiController.cs" />
+    <Compile Include="Controllers\AsiController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CommonController.cs" />
     <Compile Include="Controllers\DemirbasController.cs" />
@@ -4899,6 +4900,7 @@
     <Content Include="Views\Ajanda\Index.cshtml" />
     <Content Include="Views\Ajanda\TamamlananGorevler.cshtml" />
     <Content Include="Views\Ajanda\HayvanGorevDetay.cshtml" />
+    <Content Include="Views\Asi\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

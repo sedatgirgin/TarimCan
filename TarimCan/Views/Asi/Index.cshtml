@@ -1,0 +1,141 @@
+﻿@using TarimCan.Models
+
+@model List<Asi>
+
+@{
+    ViewBag.Title = "Aşı Yönetimi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/DashboardTheme/LightBox/css/lightbox.css" rel="stylesheet" />
+
+<div class="col-md-12">
+
+    <div class="portlet light bordered" style="min-height:620px">
+        <div class="row">
+            <div class="col-md-12" style="min-height:600px">
+                <div class="portlet light" style="padding:0 !important; font-size:13px !important; margin:0px !important">
+                    <div class="portlet-title col-md-10" style="margin-bottom:0px !important">
+                        <div class="caption">
+                            <i class="icon-equalizer font-red-sunglo"></i>
+                            <span class="caption-subject font-red-sunglo bold uppercase" style="font-size:15px">AŞI YÖNETİMİ</span>
+                            @*  <a href="https://www.youtube.com/watch?v=Zm51mv885aI&t=83s" target="_blank"> <img src="~/DashboardTheme/assets/global/ana-icons/youtube-full-logo.png" style="height:20px" title="Yardım Videosu"></a>*@
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" style="display: block; margin-left: auto; " class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                            <i class="fa-sharp fa-solid fa-plus"></i>
+                            Ekle
+                        </button>
+                    </div>
+                </div>
+   
+                <div class="portlet-body">
+                    @{
+
+                        if (Model != null && Model.Count > 0)
+                        {
+                            <table class="table table-hover table-light">
+                                <thead>
+                                    <tr>
+                                        <th>AsiAdi</th>
+                                        <th>TicariAdi</th>
+                                        <th>AsininUygulamaTekrari</th>
+                                        <th style="text-align:center">Rapel</th>
+                                        <th style="text-align:center">Cinsiyet</th>
+                                        <th style="text-align:center">SonUygulanacagiTarih</th>
+                                        <th style="text-align:center">Aktif</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+
+                                        foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td style="text-align:center">@item.AsiAdi</td>
+                                                <td>
+                                                    @item.TicariAdi
+                                                </td>
+                                                <td>
+                                                    @item.AsininUygulamaTekrari
+                                                </td>
+                                                <td>
+                                                    @item.Rapel
+                                                </td>
+                                                <td align="right">
+                                                    @item.Cinsiyet
+                                                </td>
+                                                <td align="right">
+                                                    @item.SonUygulanacagiTarih
+                                                </td>
+                                                <td style="text-align:center">
+                                                    @item.Aktif
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <span>Listelenecek aşı kaydı bulunmamaktadır...</span>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.AntiForgeryToken()
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Aşı Ekle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12">
+                    <label>Aşı Adı: </label>
+                    @Html.DropDownList("Asılar", new SelectList(ViewBag.asilar, "Value", "Text"), "Seçiniz", new { @class = "form-control" })
+                </div>
+                <div class="col-md-12">
+                    <label>Ticari Adı: </label>
+                    @Html.TextBox("TicariAdi")
+                </div>
+                <div class="col-md-12">
+                    <label>Asinin Uygulama Tekrari: </label>
+                    @Html.DropDownList("Asılar", new SelectList(ViewBag.Repeats, "Value", "Text"), "Seçiniz", new { @class = "form-control" })
+                </div>
+                <div class="col-md-12">
+                    <label>Rapel: </label>
+                    @Html.CheckBox("Rapel", new { @class = "form-control" })
+                </div>
+                <div class="col-md-12">
+                    <label>Cinsiyet: </label>
+                    @Html.CheckBox("Cinsiyet", new { @class = "form-control" })
+                </div>
+                <div class="col-md-12">
+                    <label>SonUygulanacagiTarih: </label>
+                    <input type="date" class="form-control" id="SonUygulanacagiTarih" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                <button type="button" class="btn btn-primary">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#FinansalYonetim').addClass("active");
+</script>
