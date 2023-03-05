@@ -29,7 +29,7 @@
                         </button>
                     </div>
                 </div>
-   
+
                 <div class="portlet-body">
                     @{
 
@@ -38,13 +38,15 @@
                             <table class="table table-hover table-light">
                                 <thead>
                                     <tr>
-                                        <th>AsiAdi</th>
-                                        <th>TicariAdi</th>
-                                        <th>AsininUygulamaTekrari</th>
-                                        <th style="text-align:center">Rapel</th>
-                                        <th style="text-align:center">Cinsiyet</th>
-                                        <th style="text-align:center">SonUygulanacagiTarih</th>
-                                        <th style="text-align:center">Aktif</th>
+                                        <th>Aşı Adı</th>
+                                        <th>Ticari Adı</th>
+                                        <th>Aşının Uygulama Tekrarı</th>
+                                        <th>Rapel</th>
+                                        <th>Cinsiyet</th>
+                                        <th>Son Uygulandığı Tarih</th>
+                                        <th>Uygulanacağı Tarih</th>
+                                        <th>Aktif</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -53,7 +55,7 @@
                                         foreach (var item in Model)
                                         {
                                             <tr>
-                                                <td style="text-align:center">@item.AsiAdi</td>
+                                                <td>@item.AsiAdi</td>
                                                 <td>
                                                     @item.TicariAdi
                                                 </td>
@@ -61,16 +63,62 @@
                                                     @item.AsininUygulamaTekrari
                                                 </td>
                                                 <td>
-                                                    @item.Rapel
+                                                    @{if (item.Rapel)
+                                                        {
+                                                            <p>Evet</p>
+                                                        }
+                                                        else
+                                                        {
+                                                            <p>Hayır</p>
+                                                        }
+                                                    }
                                                 </td>
-                                                <td align="right">
-                                                    @item.Cinsiyet
+                                                <td>
+                                                    @{
+                                                        if (item.Cinsiyet == 1)
+                                                        {
+                                                            <p>Erkek</p>
+                                                        }
+                                                        else
+                                                        {
+                                                            <p>Dişi</p>
+                                                        }
+                                                    }
                                                 </td>
-                                                <td align="right">
-                                                    @item.SonUygulanacagiTarih
+                                                <td>
+                                                    @item.SonUygulanacagiTarih.ToString("dd.MM.yyyy")
+                                                </td> 
+                                                
+                                                <td>
+                                                    @item.SonUygulanacagiTarih.AddMonths(item.AsininUygulamaTekrari).ToString("dd.MM.yyyy")
+
                                                 </td>
-                                                <td style="text-align:center">
-                                                    @item.Aktif
+
+                                                <td>
+
+                                                    
+                                                        <div class="form-check">
+                                                            <select class="form-control" id="Rapel">
+                                                                @{
+                                                                    if (item.Aktif)
+                                                                    {
+                                                                        <option value="0">Hayır</option>
+                                                                        <option selected value="1">Evet</option>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <option selected value="0">Hayır</option>
+                                                                        <option value="1">Evet</option>
+                                                                    }
+                                                                }
+
+                                                            </select>
+                                                        </div>
+                                                    
+
+                                                </td>
+                                                <td>
+                                                    <button type="button" id="delete_btn" class="btn btn-danger">Sil</button>
                                                 </td>
                                             </tr>
                                         }
@@ -102,40 +150,161 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <div class="col-md-12">
-                    <label>Aşı Adı: </label>
-                    @Html.DropDownList("Asılar", new SelectList(ViewBag.asilar, "Value", "Text"), "Seçiniz", new { @class = "form-control" })
+                <div class="modal-body" style=" ">
+                    <div class="form-group">
+                        <label>Aşı Adı</label>
+                        <select class="form-control" id="AsiSelectBox">
+                            <option value="">Seçiniz...</option>
+                            <option value = "Enterotoksemi(KARMA, MERA">Enterotoksemi(KARMA, MERA)</option>
+                            <option value = "Şap">Şap</option>
+                            <option value = "IBR–BVD–PI–BRS">IBR–BVD–PI–BRS</option>
+                            <option value = "Pastörella">Pastörella</option>
+                            <option value = "">Botulismus</option>
+                            <option value = "Botulismus">Çiçek(LSD)</option>
+                            <option value = "Brucella">Brucella</option>
+                            <option value = "Leptospiroz">Leptospiroz</option>
+                            <option value = "Yanıkara">Yanıkara</option>
+                            <option value = "Şarbon">Şarbon</option>
+                            <option value = "Septisemi">Septisemi</option>
+                            <option value = "Kuduz">Kuduz</option>
+                            <option value = "Theileria">Theileria</option>
+                            <option value = "Trikofiti(Mantar)">Trikofiti(Mantar)</option>
+                            <option value = "Diğer">Diğer</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ticari Adı</label>
+                        <input id="TicariAdi" class="form-control" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>Asinin Uygulama Tekrari</label>
+                        <select class="form-control" id="AsininUygulamaTekrari">
+                            <option value="">Seçiniz...</option>
+                            @{
+                                for (int i = 1; i < 13; i++)
+                                {
+                                    <option value="@i">@i.ToString() ay</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label >Cinsiyet</label>
+                        <select class="form-control" id="Cinsiyet">
+                            <option value="">Seçiniz...</option>
+                            <option value="0">Dişi</option>
+                            <option value="1">Erkek</option>
+                            <option value="3">Hepsi</option>
+
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Son Uygulandığı Veya Uygulanacağı Tarih</label>
+                        <input id="SonUygulanacagiTarih" class="form-control" type="date" placeholder="Default input">
+                    </div>
+                    <div class="form-check">
+                        <label>Rapel</label>
+                        <select class="form-control" id="Rapel">
+                            <option value="0">Hayır</option>
+                            <option value="1">Evet</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="col-md-12">
-                    <label>Ticari Adı: </label>
-                    @Html.TextBox("TicariAdi")
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                    <button type="button" id="save_btn" class="btn btn-primary">Kaydet</button>
                 </div>
-                <div class="col-md-12">
-                    <label>Asinin Uygulama Tekrari: </label>
-                    @Html.DropDownList("Asılar", new SelectList(ViewBag.Repeats, "Value", "Text"), "Seçiniz", new { @class = "form-control" })
-                </div>
-                <div class="col-md-12">
-                    <label>Rapel: </label>
-                    @Html.CheckBox("Rapel", new { @class = "form-control" })
-                </div>
-                <div class="col-md-12">
-                    <label>Cinsiyet: </label>
-                    @Html.CheckBox("Cinsiyet", new { @class = "form-control" })
-                </div>
-                <div class="col-md-12">
-                    <label>SonUygulanacagiTarih: </label>
-                    <input type="date" class="form-control" id="SonUygulanacagiTarih" />
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
-                <button type="button" class="btn btn-primary">Kaydet</button>
-            </div>
         </div>
     </div>
 </div>
+<script src="@Url.Content("~/DashboardTheme/assets/global/plugins/jquery.min.js")" type="text/javascript"></script>
 
 <script>
-    $('#FinansalYonetim').addClass("active");
+    $('#AsiYonetimi').addClass("active");
+
+
+    $("#save_btn").click(function () {
+
+        var isvalid = true;
+
+        var asiAdi = $('#AsiSelectBox').val();
+        if (asiAdi == '') {
+            $('#AsiSelectBox').css('border-color', 'red');
+            isvalid = false;
+        } else {
+            $('#AsiSelectBox').css('border-color', '#e5e5e5');
+        }
+
+        var ticariAdi = $('#TicariAdi').val();
+        if (ticariAdi == '') {
+            $('#TicariAdi').css('border-color', 'red');
+            isvalid = false;
+        } else {
+            $('#TicariAdi').css('border-color', '#e5e5e5');
+        }
+
+        var tekrar = $('#AsininUygulamaTekrari').val();
+        if (tekrar == '') {
+            $('#AsininUygulamaTekrari').css('border-color', 'red');
+            isvalid = false;
+        } else {
+            $('#AsininUygulamaTekrari').css('border-color', '#e5e5e5');
+        }
+
+        var cinsiyet = $('#Cinsiyet').val();
+        if (cinsiyet == '') {
+            $('#Cinsiyet').css('border-color', 'red');
+            isvalid = false;
+        }else{
+            $('#Cinsiyet').css('border-color', '#e5e5e5');
+        }
+
+        var rabel = $('#Rapel').val();
+        if (rabel == '') {
+            $('#Rapel').css('border-color', 'red');
+            isvalid = false;
+        } else {
+            $('#Rapel').css('border-color', '#e5e5e5');
+        }
+
+        var sonUygulanacagiTarih = $('#SonUygulanacagiTarih').val();
+        if (sonUygulanacagiTarih == '') {
+            $('#SonUygulanacagiTarih').css('border-color', 'red');
+            isvalid = false;
+        } else {
+            $('#SonUygulanacagiTarih').css('border-color', '#e5e5e5');
+        }
+
+        if (isvalid == true) {
+            var data = {
+                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+                'asiAdi': asiAdi,
+                'ticariAdi': ticariAdi,
+                'tekrar': tekrar,
+                'rabel': rabel,
+                'cinsiyet': cinsiyet,
+                'sonUygulandıgiTarih': sonUygulanacagiTarih,
+            }
+
+             $.ajax({
+            type: "POST",
+            url: '@Url.Action("Insert", "Asi")',
+            data: data,
+            success: function (response) {
+                if (response) {
+                    window.location = '/Asi/Index';
+                } else {
+                    alert("Hata Oluştu")
+                }
+            }
+        });
+        }
+    });
+
+
+
+
+
+
 </script>
