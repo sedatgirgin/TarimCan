@@ -8,6 +8,13 @@
       "files": [
         "jquery.min.js"
       ]
+    },
+    {
+      "library": "toastr.js@2.1.4",
+      "destination": "lib/toastr.js/",
+      "files": [
+        "toastr.min.js"
+      ]
     }
   ]
 }

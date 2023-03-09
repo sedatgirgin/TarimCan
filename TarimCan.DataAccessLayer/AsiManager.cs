@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using TarimCan.Models;
@@ -46,6 +47,42 @@ namespace TarimCan.DataAccessLayer
             }
         }
 
+        public bool Update(int Id, bool active)
+        {
+            try
+            {
+                List<SqlParameter> lstParam = new List<SqlParameter>();
+                lstParam.Add(new SqlParameter("@Id", Id));
+                lstParam.Add(new SqlParameter("@Aktif", active));
+                lstParam.Add(new SqlParameter("@StatementType", "Update"));
+                sda.ExecuteObject<AjandaModel>("sp_AsiSelectInsertUpdateDelete", lstParam);
+
+                return true;
+            }
+            catch (Exception)
+            {
+
+                return false;
+            }
+        }
+
+        public bool Delete(int Id)
+        {
+            try
+            {
+                List<SqlParameter> lstParam = new List<SqlParameter>();
+                lstParam.Add(new SqlParameter("@Id", Id));
+                lstParam.Add(new SqlParameter("@StatementType", "Delete"));
+                sda.ExecuteObject<AjandaModel>("sp_AsiSelectInsertUpdateDelete", lstParam);
+
+                return true;
+            }
+            catch (Exception)
+            {
+
+                return false;
+            }
+        }
 
     }
 }

@@ -32,5 +32,17 @@ namespace TarimCan.Controllers
 
             return Json(asiMan.Insert(asi));
         }
+
+        [ValidateAntiForgeryToken()]
+        public JsonResult Update(int id, int active)
+        {
+            return Json(asiMan.Update(id, active==0?false:true));
+        }
+
+        [ValidateAntiForgeryToken()]
+        public JsonResult Delete(int id)
+        {
+            return Json(asiMan.Delete(id));
+        }
     }
 }

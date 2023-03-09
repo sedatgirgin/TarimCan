@@ -98,7 +98,7 @@
 
                                                     
                                                         <div class="form-check">
-                                                            <select class="form-control" id="Rapel">
+                                                            <select class="form-control" onchange="selectActivate(@item.Id)" id="selectactivate">
                                                                 @{
                                                                     if (item.Aktif)
                                                                     {
@@ -118,7 +118,7 @@
 
                                                 </td>
                                                 <td>
-                                                    <button type="button" id="delete_btn" class="btn btn-danger">Sil</button>
+                                                    <button type="button" id="delete_btn" onclick="deleteBtn(@item.Id)" class="btn btn-danger">Sil</button>
                                                 </td>
                                             </tr>
                                         }
@@ -137,8 +137,6 @@
     </div>
     @Html.AntiForgeryToken()
 </div>
-
-
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -221,8 +219,19 @@
 <script src="@Url.Content("~/DashboardTheme/assets/global/plugins/jquery.min.js")" type="text/javascript"></script>
 
 <script>
-    $('#AsiYonetimi').addClass("active");
+    $(document).ready(function () {
+        dataTable = $("#example").DataTable({
+            "columnDefs": [
+                {
+                    "targets": [7],
+                    "visible": false
+                }
+            ]
 
+        });
+
+
+    $('#AsiYonetimi').addClass("active");
 
     $("#save_btn").click(function () {
 
@@ -302,9 +311,40 @@
         }
     });
 
+    function selectActivate(id) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("update", "Asi")',
+            data: {
+                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+                'id': id,
+                "active": document.getElementById("selectactivate").value
+            },
+            success: function (response) {
+                if (response) {
+                    toastr.success("İşlem Başarılı");
+                } else {
+                    toastr.error("Hata Oluştu");
+                }
+            }
+        });
+    }
 
-
-
-
-
+    function deleteBtn(id) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Delete", "Asi")',
+            data: {
+                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+                'id': id,
+            },
+            success: function (response) {
+                if (response) {
+                    window.location = '/Asi/Index';
+                } else {
+                    toastr.error("Silme İşleminde hata oluştu");
+                }
+            }
+        });
+    }
 </script>
