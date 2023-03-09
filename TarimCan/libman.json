@@ -2,19 +2,6 @@
   "version": "1.0",
   "defaultProvider": "cdnjs",
   "libraries": [
-    {
-      "library": "jquery@3.6.3",
-      "destination": "lib/jquery/",
-      "files": [
-        "jquery.min.js"
-      ]
-    },
-    {
-      "library": "toastr.js@2.1.4",
-      "destination": "lib/toastr.js/",
-      "files": [
-        "toastr.min.js"
-      ]
-    }
+   
   ]
 }
