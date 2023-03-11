@@ -118,8 +118,12 @@
 
                                                 </td>
                                                 <td>
-                                                    <button type="button" id="delete_btn" onclick="deleteBtn(@item.Id)" class="btn btn-danger">Sil</button>
+                                                    <button type="button" id="animal_add_btn" class="btn btn-info" onclick="InsertAsiId(@item.Id)" data-toggle="modal" data-target="#animalModal"><i class="fa-solid fa-cow fa-lg"></i></button>
                                                 </td>
+                                                <td>
+                                                    <button type="button" id="delete_btn" onclick="deleteBtn(@item.Id)" class="btn btn-danger"><i class="fa-regular fa-trash fa-lg"></i></button>
+                                                </td>
+
                                             </tr>
                                         }
                                     }
@@ -216,20 +220,73 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="animalModal" tabindex="-1" role="dialog" aria-labelledby="animalModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="animalModalLabel">Aşılanan hayvanları seçiniz</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @{
+                    List<HayvanModel> hayvanlar = ViewBag.AnimalList;
+                    if (hayvanlar != null && hayvanlar.Count > 0)
+                    {
+                        <table id="animallist" class="table table-hover table-light">
+                            <thead>
+
+                                <tr>
+                                    <th hidden></th>
+                                    <th>No</th>
+                                    <th>Hayvan Adı</th>
+                                    <th>Küpe No</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                
+                                    foreach (var item in hayvanlar)
+                                    {
+                                        <tr>
+                                            <td><input name="locationthemes" type="checkbox" id="@item.Id"></td>
+                                            <td hidden >@item.Id</td>
+                                            <td>@item.Adi</td>
+                                            <td>
+                                                @item.KupeNo
+                                            </td>
+
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <span>Listelenecek hayvan kaydı bulunmamaktadır...</span>
+                    }
+                }
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                <button type="button" onclick="AddAnimal()" class="btn btn-primary">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="@Url.Content("~/DashboardTheme/assets/global/plugins/jquery.min.js")" type="text/javascript"></script>
 
 <script>
-    $(document).ready(function () {
-        dataTable = $("#example").DataTable({
-            "columnDefs": [
-                {
-                    "targets": [7],
-                    "visible": false
-                }
-            ]
 
-        });
-
+    var asiId = 0;
+    function InsertAsiId(id) {
+        asiId = id;
+    }
 
     $('#AsiYonetimi').addClass("active");
 
@@ -346,5 +403,35 @@
                 }
             }
         });
+    }
+
+    function AddAnimal() {
+
+        var hayvanList = [];
+        $('input[name="locationthemes"]:checked').each(function (i) {
+            hayvanList.push(this.id);
+        });
+
+        if (hayvanList.length > 0 || asiId != 0) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("HayvanAsiInsert", "Asi")',
+                data: {
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+                    'hayvanIdList': hayvanList,
+                    'asiId': asiId,
+                },
+                success: function (response) {
+                    if (response) {
+                        toastr.success("İşlem başarılı");
+                    } else {
+                        toastr.error("Silme İşleminde hata oluştu");
+                    }
+                }
+            });
+        } else {
+            toastr.error("Hayvan seçiniz...");
+
+        }
     }
 </script>

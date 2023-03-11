@@ -761,6 +761,7 @@ namespace TarimCan.Controllers
             model.DurumHareketleriReverse = hm.HayvanDurumHareketleriGetir(id, SessionManager.KullaniciId);
 
             model.DurumHareketleriReverse.Reverse();
+            ViewBag.HayvanAsiList = asiMan.HayvanAsiSelect(id); ;
 
             if (model.HayvanDetay.Fotograflar != null)
             {

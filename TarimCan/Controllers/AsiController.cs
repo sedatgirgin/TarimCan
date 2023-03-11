@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -14,6 +15,7 @@ namespace TarimCan.Controllers
         [UserAuthorizeController]
         public ActionResult Index()
         {
+            ViewBag.AnimalList = hm.InekleriGetir(SessionManager.KullaniciId); ;
             return View(asiMan.Select(SessionManager.KullaniciId));
         }
 
@@ -43,6 +45,24 @@ namespace TarimCan.Controllers
         public JsonResult Delete(int id)
         {
             return Json(asiMan.Delete(id));
+        }
+
+        [ValidateAntiForgeryToken()]
+        public JsonResult HayvanAsiInsert(List<int> hayvanIdList, int asiId)
+        {
+            try
+            {
+                foreach (var item in hayvanIdList)
+                {
+                    asiMan.HayvanAsiInsert(item, asiId);
+                }
+                return Json(true);
+            }
+            catch (Exception)
+            {
+
+                return Json(false);
+            }   
         }
     }
 }

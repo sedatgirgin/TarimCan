@@ -335,6 +335,84 @@
                         </div>
                     </div>
                 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <div class="row" id="pnlDurumHareketleri">
+                    <div class="col-md-12">
+                        <div class="portlet light" style="padding:0 !important; font-size:13px !important; margin:0px !important">
+                            <div class="portlet-title" style="margin-bottom:0px !important">
+                                <div class="caption">
+                                    <i class="icon-equalizer font-red-sunglo"></i>
+                                    <span class="caption-subject font-red-sunglo bold uppercase" style="font-size:15px">AŞI DURUM BİLGİSİ</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin:10px; display:none" id="pnlDurumBilgisiEkle">
+                            <div class="row">
+                                <div class="col-md-2"><label class="control-label" style="padding-top:5px;">Durum Bilgisi</label></div>
+                                <div class="col-md-4">
+                                    @Html.DropDownList("DurumBilgileri", new SelectList(ViewBag.DurumBilgileri, "Value", "Text"), "Seçiniz", new { @class = "form-control", @onchange = "DurumBilgisiChanged(this.value)" })
+                                </div>
+                                <div class="col-md-2" style="padding-top:5px;">İşlem Tarihi</div>
+                                <div class="col-md-4">
+                                    <input type="date" class="form-control" data-format="00-00-0000" placeholder="dd-mm-yyyy" id="DurumIslemTarihi" autocomplete="off" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="portlet-body">
+                            <div id="pnlDurumHareketLoading" style="width:100%; height:250px; text-align:center; display: none">
+                                <img src="~/DashboardTheme/assets/admin/layout4/img/app_loading.gif" width="75" height="75" />
+                            </div>
+                            <div class="col-md-12" style="margin:0 !important; padding:0 !important">
+
+                                <table class="table table-hover table-light">
+                                    <thead>
+                                        <tr role="row" class="heading">
+                                            <th width="5%" tabindex="0" rowspan="1" colspan="1">
+                                                Aşı Adı
+                                            </th>
+                                            <th width="15%" tabindex="0" rowspan="1" colspan="1">
+                                                Ticari Adı
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+
+                                            List<Asi> asiList = ViewBag.HayvanAsiList;
+                                            if (asiList != null && asiList.Count > 0)
+                                            {
+                                                foreach (var item in asiList)
+                                                {
+                                                    <tr>
+                                                        <td>@item.AsiAdi</td>
+                                                        <td>
+                                                            @item.TicariAdi
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -84,5 +84,33 @@ namespace TarimCan.DataAccessLayer
             }
         }
 
+        public List<Asi> HayvanAsiSelect(int hayvanId)
+        {
+            List<SqlParameter> lstParam = new List<SqlParameter>();
+            lstParam.Add(new SqlParameter("@HayvanId", hayvanId));
+            lstParam.Add(new SqlParameter("@StatementType", "Select"));
+            return sda.ExecuteObject<Asi>("sp_HayvanAsiSelectInsertDelete", lstParam);
+        }
+
+        public bool HayvanAsiInsert(int hayvanId, int asiId)
+        {
+            try
+            {
+                List<SqlParameter> lstParam = new List<SqlParameter>();
+                lstParam.Add(new SqlParameter("@HayvanId", hayvanId));
+                lstParam.Add(new SqlParameter("@AsiId", asiId));
+                lstParam.Add(new SqlParameter("@AsiTarihi", DateTime.Now));
+                lstParam.Add(new SqlParameter("@StatementType", "Insert"));
+                sda.ExecuteObject<AjandaModel>("sp_HayvanAsiSelectInsertDelete", lstParam);
+
+                return true;
+            }
+            catch (Exception)
+            {
+
+                return false;
+            }
+        }
+
     }
 }
